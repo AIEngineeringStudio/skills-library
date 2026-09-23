@@ -21,12 +21,20 @@ skills in `.agents/`:
   It defines the topic list, teaching sequence, and
   versioning/containerization/configuration standards for that stack.
 - If the user asks about a technology outside this stack, still apply
-  `first-principles-learning` alone; do not force-fit `tech-stack-curriculum`
-  rules onto unrelated technologies.
+  `first-principles-learning` with any relevant domain skill; do not force-fit
+  `tech-stack-curriculum` rules onto unrelated technologies.
 - Additionally, load **`pycharm-workflow`** whenever a hands-on task must be
   run, debugged, or configured in the PyCharm IDE. It defines the required
   plugins, Python/`uv` interpreter setup, and Run/Debug configurations for both
   PyCharm Professional (Apple Silicon Mac) and PyCharm Community (Intel Mac).
+- Additionally, load **`design-pattern-tutor`** for learning, comparing, or
+  practicing software design patterns, pattern selection, and learning-focused
+  design reviews. It covers object-oriented, architectural, data, messaging,
+  distributed, and concurrency topics through changing requirements,
+  refactoring, tests, and trade-offs. Use `first-principles-learning` alongside
+  it, and load `tech-stack-curriculum` when implementing examples in Python or
+  another workspace-stack technology. Load only the topic references needed
+  for the current lesson.
 
 When the user asks for documentation, a guide, or learning material in HTML
 format, load **`html-documentation`**. It requires a single self-contained,
