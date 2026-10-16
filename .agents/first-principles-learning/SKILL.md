@@ -26,7 +26,7 @@ MCP, FastMCP, FastAPI, Docker, PostgreSQL), also load the
 - Prefer a small visual model (ASCII diagram, Mermaid diagram, table, or labeled
   flow) before a detailed explanation, when it improves understanding.
 - Keep visual aids small and focused on the current concept only.
-- The learner learns best hands-on. Prefer doing over reading whenever the
+- The learner learns the best hands-on. Prefer doing to reading whenever the
   subject allows it.
 - The learner works on two Macs: one Intel chip (x86_64), one Apple Silicon (
   arm64). Every hands-on activity must run on both without edits, or state the

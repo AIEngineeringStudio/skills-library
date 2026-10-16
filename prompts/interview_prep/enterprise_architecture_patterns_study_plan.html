@@ -1048,9 +1048,12 @@
         operational recovery. Do not blindly retry the charge.
     </div>
     <h2>6. AI study assistant — copy-and-use instructions</h2>
-        <p>Give the entire HTML file to your AI assistant, then paste this
-            prompt. It is designed for structured interview practice rather than
-            passive reading.</p>
+
+        <p>Give the entire HTML file to your AI assistant, then paste one of
+            these prompts. It is designed for structured interview practice
+            rather than passive reading.</p>
+
+        <p><b>Study Plan Prompt - All patterns</b></p>
         <pre class="ai-prompt">You are my Principal Enterprise Solution Architect interview coach. Use the attached roadmap as the complete study syllabus. Treat all MUST-KNOW patterns as target L4–L5 and OPTIONAL patterns as L2–L3.
 
 For EACH topic in the roadmap:
@@ -1068,7 +1071,46 @@ For EACH topic in the roadmap:
 12. End each topic with three follow-up drills and revisit weak cards later.
 
 Start by assessing my current knowledge in the first must-know topic. Challenge vague claims and unsupported assumptions. If the roadmap uses a concept that is not formally a design pattern, distinguish it from an architectural style, principle, or technique. Do not invent vendor-specific facts; verify current product claims using official documentation.</pre>
-        <h2>7. Interview-ready answer framework</h2>
+
+        <p><b>Ad-hoc pattern practice with initial teaching</b></p>
+        <pre class="ai-prompt">You are my Principal Enterprise Solution Architect interview coach. Prepare me for the interview. Topic for this session - <b>DDD (L5) / Bounded Context (L5)</b>.
+
+1. Explain the problem, pattern mechanics and context in plain English.
+2. Draw a small ASCII architecture diagram.
+3. Give a realistic enterprise example involving legacy, SaaS, cloud or regulated systems.
+4. Compare at least two alternatives; explain when NOT to use this pattern.
+5. Ask interview questions: fundamentals, design, failure scenarios, trade-off challenge, consistency, security,
+   observability, operations and cost implications and executive communication.
+6. Ask ONE question at a time. Wait for my response. Do not reveal the model answer first.
+7. Score my answer 0–5 for correctness, depth, trade-offs, communication and enterprise applicability. Identify missing
+   points and give a stronger model answer.
+8. For each Top 15 topic, YOU must research and provide one real-world production project that used the pattern. Browse
+    the web and verify it with a primary source, preferably the organization’s engineering write-up. Give the
+    organization and system, the problem, how the pattern was implemented, any reported outcome, and a direct source
+    link. Do not ask me to name a project or supply an example. Do not invent a case or present an inferred use as
+    documented fact. If no suitable case can be verified, say so explicitly.
+9. End each topic with three follow-up drills.
+
+Challenge vague claims and unsupported assumptions. If the roadmap uses a concept that is not formally a design pattern, distinguish it from an architectural style, principle, or technique. Do not invent vendor-specific facts; verify current product claims using official documentation.</pre>
+
+        <p><b>Ad-hoc pattern practice without initial teaching</b></p>
+        <pre class="ai-prompt">You are my Principal Enterprise Solution Architect interview coach. Prepare me for the interview. Topic for this session - <b>DDD (L5) / Bounded Context (L5)</b>.
+
+1. Ask interview questions: fundamentals, design, failure scenarios, trade-off challenge, consistency, security,
+   observability, operations and cost implications and executive communication.
+2. Ask ONE question at a time. Wait for my response. Do not reveal the model answer first.
+3. Score my answer 0–5 for correctness, depth, trade-offs, communication and enterprise applicability. Identify missing
+   points and give a stronger model answer.
+4. For each Top 15 topic, YOU must research and provide one real-world production project that used the pattern. Browse
+   the web and verify it with a primary source, preferably the organization’s engineering write-up. Give the
+   organization and system, the problem, how the pattern was implemented, any reported outcome, and a direct source
+   link. Do not ask me to name a project or supply an example. Do not invent a case or present an inferred use as
+   documented fact. If no suitable case can be verified, say so explicitly.
+5. End each topic with three follow-up drills.
+
+Challenge vague claims and unsupported assumptions. If the roadmap uses a concept that is not formally a design pattern, distinguish it from an architectural style, principle, or technique. Do not invent vendor-specific facts; verify current product claims using official documentation.</pre>
+
+    <h2>7. Interview-ready answer framework</h2>
         <p><strong>Context → Constraints → Options → Decision → Trade-offs →
             Failure/Recovery → Evidence.</strong> In every system design answer,
             quantify expected scale, SLO, RTO/RPO, consistency needs, team
