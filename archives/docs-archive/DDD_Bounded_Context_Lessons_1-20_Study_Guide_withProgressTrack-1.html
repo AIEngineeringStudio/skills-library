@@ -1,0 +1,3655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>DDD &amp; Bounded Context — Lessons 1–20 | Principal Interview Study
+        Guide</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --forest: #123f2b;
+            --green: #176543;
+            --leaf: #237f53;
+            --mist: #f1f8f3;
+            --pale: #e9f4ec;
+            --mint: #d8ebdd;
+            --line: #d6e6da;
+            --ink: #20332a;
+            --muted: #566b60;
+            --surface: #fff;
+            --page: #f5faf6;
+            --shadow: 0 12px 38px rgba(23, 73, 44, .07)
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 24px
+        }
+
+        body {
+            margin: 0;
+            background: var(--page);
+            color: var(--ink);
+            font: 15px/1.65 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif
+        }
+
+        a {
+            color: var(--green)
+        }
+
+        a:hover {
+            text-decoration-thickness: 2px
+        }
+
+        a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible {
+            outline: 3px solid #84c79b;
+            outline-offset: 3px
+        }
+
+        .wrap {
+            max-width: 1360px;
+            margin: auto;
+            padding: 25px 30px 56px
+        }
+
+        .hero {
+            background: linear-gradient(115deg, #fff 24%, #ebf6ef 100%);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: 39px 44px 32px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            width: 330px;
+            height: 330px;
+            border: 45px solid rgba(82, 159, 106, .075);
+            border-radius: 50%;
+            right: -190px;
+            top: -210px;
+            pointer-events: none
+        }
+
+        .eyebrow {
+            display: inline-block;
+            color: var(--green);
+            font-weight: 800;
+            font-size: 11px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            margin-bottom: 14px
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 3.3vw, 3.15rem);
+            letter-spacing: -.045em;
+            line-height: 1.12;
+            color: var(--forest);
+            max-width: 830px;
+            margin: 0 0 18px
+        }
+
+        .hero p {
+            max-width: 880px;
+            color: #455e50;
+            font-size: 1.02rem;
+            margin: 0 0 13px
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 22px
+        }
+
+        .pill {
+            padding: 6px 11px;
+            border: 1px solid #bfddc6;
+            border-radius: 999px;
+            color: #225b3d;
+            background: white;
+            font-size: 12px;
+            font-weight: 700
+        }
+
+        .disclaimer {
+            margin-top: 17px;
+            font-size: 12px !important;
+            color: var(--muted) !important
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns:minmax(235px, 265px) minmax(0, 1fr);
+            gap: 26px;
+            align-items: start;
+            margin-top: 24px
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 16px;
+            max-height: calc(100vh - 32px);
+            overflow-y: auto;
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: var(--shadow);
+            scrollbar-color: #b8d4c0 transparent
+        }
+
+        .sidebar h2 {
+            font-size: 13px;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            color: var(--forest);
+            margin: 3px 0 14px
+        }
+
+        .sidebar .searchlabel {
+            font-size: 12px;
+            font-weight: 700;
+            display: block;
+            margin: 10px 0 5px
+        }
+
+        .sidebar input[type=search] {
+            width: 100%;
+            background: white;
+            border: 1px solid #a9cbb3;
+            border-radius: 8px;
+            color: var(--forest);
+            font: inherit;
+            padding: 9px 10px
+        }
+
+        .searchcount {
+            font-size: 11px;
+            color: var(--muted);
+            margin: 5px 0 13px;
+            min-height: 1.4em
+        }
+
+        .progress-wrap {
+            background: var(--mist);
+            border: 1px solid var(--line);
+            border-radius: 11px;
+            padding: 12px;
+            margin: 12px 0
+        }
+
+        .progress-heading {
+            display: flex;
+            justify-content: space-between;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--forest);
+            font-weight: 750
+        }
+
+        .progress-wrap progress {
+            width: 100%;
+            height: 12px;
+            accent-color: var(--leaf);
+            margin-top: 8px
+        }
+
+        .sidebar-nav {
+            padding: 0;
+            margin: 8px 0 0;
+            list-style: none
+        }
+
+        .sidebar-nav li {
+            margin: 0
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 6px 9px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-size: 12.5px;
+            line-height: 1.35;
+            color: var(--ink)
+        }
+
+        .sidebar-nav a:hover {
+            background: var(--mist);
+            color: var(--green)
+        }
+
+        .sidebar-nav a span {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--green);
+            margin-right: 4px
+        }
+
+        .sidebar-nav .reviewlink {
+            font-weight: 750;
+            border-top: 1px solid var(--line);
+            margin-top: 11px;
+            padding-top: 11px
+        }
+
+        .sidebar-nav li[hidden] {
+            display: none !important
+        }
+
+        .main {
+            min-width: 0
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 13px 15px;
+            margin-bottom: 14px
+        }
+
+        .btn {
+            background: var(--green);
+            color: #fff;
+            border: 1px solid var(--green);
+            border-radius: 9px;
+            padding: 9px 13px;
+            font-weight: 750;
+            font-size: 12.5px;
+            cursor: pointer
+        }
+
+        .btn.secondary {
+            background: #fff;
+            color: var(--green);
+            border-color: #a6cdb1
+        }
+
+        .btn:hover {
+            filter: brightness(.93)
+        }
+
+        .controls-note {
+            font-size: 11px;
+            color: var(--muted);
+            flex: 1;
+            min-width: 150px
+        }
+
+        .lesson {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 20px rgba(20, 70, 40, .04);
+            overflow: hidden;
+            scroll-margin-top: 16px
+        }
+
+        .lesson[hidden] {
+            display: none !important
+        }
+
+        .lesson > summary {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            list-style: none;
+            cursor: pointer;
+            padding: 20px 23px
+        }
+
+        .lesson > summary::-webkit-details-marker, .model-answer > summary::-webkit-details-marker, .principal-answer > summary::-webkit-details-marker {
+            display: none
+        }
+
+        .lesson[open] > summary {
+            background: linear-gradient(95deg, #eaf5ec, #f9fdf9);
+            border-bottom: 1px solid var(--line)
+        }
+
+        .num {
+            font-weight: 800;
+            font-size: 11px;
+            color: var(--leaf);
+            background: #e0f0e4;
+            border-radius: 6px;
+            padding: 5px 8px;
+            white-space: nowrap
+        }
+
+        .lesson-title {
+            flex: 1;
+            min-width: 0;
+            font-size: clamp(1rem, 1.5vw, 1.3rem);
+            letter-spacing: -.02em;
+            line-height: 1.32;
+            font-weight: 800;
+            color: var(--forest)
+        }
+
+        .caret {
+            color: var(--green);
+            transition: transform .16s ease;
+            font-weight: 900
+        }
+
+        .lesson[open] > summary .caret {
+            transform: rotate(180deg)
+        }
+
+        .lesson-body {
+            padding: 8px 24px 24px
+        }
+
+        .lesson-section {
+            margin: 23px 0 0
+        }
+
+        .lesson-section h3 {
+            margin: 0 0 9px;
+            color: var(--forest);
+            font-size: 15.5px;
+            line-height: 1.35
+        }
+
+        .section-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--mist);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            width: 25px;
+            height: 25px;
+            color: var(--green);
+            font-size: 12px;
+            margin-right: 8px
+        }
+
+        p {
+            margin: 8px 0 11px
+        }
+
+        .definition {
+            display: grid;
+            grid-template-columns:135px minmax(0, 1fr);
+            gap: 7px 15px;
+            margin: 10px 0 16px;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            background: var(--mist);
+            font-size: 13.5px
+        }
+
+        .definition dt {
+            font-weight: 750;
+            color: var(--forest)
+        }
+
+        .definition dd {
+            margin: 0
+        }
+
+        .small-label {
+            font-weight: 750;
+            color: var(--forest)
+        }
+
+        .example {
+            padding: 13px 16px;
+            background: #fbfefb;
+            border-left: 3px solid #5ca478;
+            border-radius: 4px
+        }
+
+        .example pre, pre {
+            font: 12px/1.6 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+            color: #143e2a;
+            background: #f0f7f1;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 9px;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+            margin: 12px 0
+        }
+
+        .interview-q {
+            margin: 0;
+            padding: 15px 17px;
+            background: #f6faf7;
+            border: 1px solid #c8dfcf;
+            border-radius: 11px;
+            font-weight: 675;
+            color: #244936
+        }
+
+        .model-answer, .principal-answer {
+            border: 1px solid #b8d9c0;
+            border-radius: 12px;
+            background: #f0f7f1;
+            overflow: hidden;
+            margin-top: 8px
+        }
+
+        .model-answer > summary, .principal-answer > summary {
+            font-weight: 800;
+            color: var(--green);
+            cursor: pointer;
+            padding: 11px 15px;
+            background: #e5f2e9
+        }
+
+        .model-answer > summary::before, .principal-answer > summary::before {
+            content: "+ ";
+            font-weight: 850
+        }
+
+        .model-answer[open] > summary::before, .principal-answer[open] > summary::before {
+            content: "− "
+        }
+
+        .answer-content {
+            padding: 13px 17px
+        }
+
+        .answer-content p {
+            margin: 7px 0 11px
+        }
+
+        .answer-content strong {
+            color: #225c3c
+        }
+
+        .takeaways {
+            margin: 8px 0 0;
+            padding-left: 22px
+        }
+
+        .takeaways li {
+            padding: 2px 0;
+            break-inside: avoid
+        }
+
+        .complete-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            border-top: 1px solid var(--line);
+            margin-top: 24px;
+            padding-top: 14px
+        }
+
+        .complete-line label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            cursor: pointer
+        }
+
+        .complete-line input {
+            accent-color: var(--green);
+            width: 17px;
+            height: 17px
+        }
+
+        .complete-line a {
+            font-size: 12px;
+            text-decoration: none
+        }
+
+        .review {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 17px;
+            padding: 26px;
+            scroll-margin-top: 16px
+        }
+
+        .review h2 {
+            color: var(--forest);
+            font-size: 26px;
+            line-height: 1.25;
+            letter-spacing: -.025em;
+            margin: 0 0 13px
+        }
+
+        .review h3 {
+            color: var(--green);
+            font-size: 18px;
+            margin: 26px 0 9px
+        }
+
+        .review h4 {
+            margin: 16px 0 6px;
+            color: var(--forest)
+        }
+
+        .review-grid {
+            display: grid;
+            grid-template-columns:repeat(2, minmax(0, 1fr));
+            gap: 12px
+        }
+
+        .info-card {
+            border: 1px solid var(--line);
+            border-radius: 11px;
+            padding: 14px;
+            background: #fbfefb
+        }
+
+        .info-card h4 {
+            margin: 0 0 5px
+        }
+
+        .review table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px
+        }
+
+        .review th, .review td {
+            border: 1px solid var(--line);
+            padding: 9px;
+            text-align: left;
+            vertical-align: top
+        }
+
+        .review th {
+            background: #eaf5ed;
+            color: var(--forest)
+        }
+
+        .review td {
+            overflow-wrap: anywhere
+        }
+
+        .review table tr {
+            break-inside: avoid
+        }
+
+        .scenario {
+            border-top: 1px solid var(--line);
+            margin: 16px 0 0;
+            padding-top: 13px
+        }
+
+        .scenario h4 {
+            margin: 0 0 7px
+        }
+
+        .sources {
+            border-top: 1px solid var(--line);
+            margin-top: 24px;
+            padding-top: 16px;
+            font-size: 12.5px
+        }
+
+        .sources ol {
+            padding-left: 20px
+        }
+
+        .sources li {
+            margin: 8px 0;
+            overflow-wrap: anywhere
+        }
+
+        .sources span {
+            color: var(--muted)
+        }
+
+        .notice {
+            border-left: 3px solid var(--leaf);
+            background: var(--mist);
+            padding: 10px 14px;
+            border-radius: 4px
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        .noscript {
+            border: 1px solid #b9d5c2;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            background: white
+        }
+
+        @media (max-width: 950px) {
+            .wrap {
+                padding: 14px
+            }
+
+            .layout {
+                grid-template-columns:minmax(195px, 220px) minmax(0, 1fr);
+                gap: 13px
+            }
+
+            .sidebar {
+                padding: 12px
+            }
+
+            .hero {
+                padding: 27px 26px
+            }
+        }
+
+        @media (max-width: 700px) {
+            .layout {
+                display: block
+            }
+
+            .sidebar {
+                position: sticky;
+                top: 0;
+                z-index: 9;
+                max-height: 215px;
+                margin-bottom: 13px;
+                border-radius: 0 0 13px 13px;
+                padding: 11px 14px
+            }
+
+            .sidebar h2 {
+                margin: 0 0 6px
+            }
+
+            .sidebar .searchlabel {
+                display: none
+            }
+
+            .sidebar input[type=search] {
+                padding: 7px 9px
+            }
+
+            .sidebar-nav {
+                columns: 2;
+                margin: 6px 0
+            }
+
+            .sidebar-nav a {
+                font-size: 11px;
+                padding: 3px 5px
+            }
+
+            .sidebar-nav li {
+                break-inside: avoid
+            }
+
+            .sidebar .progress-wrap {
+                margin: 5px 0;
+                padding: 5px 8px
+            }
+
+            .sidebar .progress-wrap progress {
+                margin-top: 2px;
+                height: 9px
+            }
+
+            .searchcount {
+                margin: 2px 0
+            }
+
+            .hero {
+                padding: 24px 21px
+            }
+
+            .lesson > summary {
+                padding: 15px;
+                gap: 9px;
+                align-items: flex-start
+            }
+
+            .lesson-body {
+                padding: 4px 16px 18px
+            }
+
+            .definition {
+                grid-template-columns:1fr;
+                gap: 2px;
+                padding: 11px
+            }
+
+            .review {
+                padding: 17px
+            }
+
+            .review-grid {
+                grid-template-columns:1fr
+            }
+
+            .controls {
+                padding: 10px
+            }
+
+            .btn {
+                padding: 8px 10px
+            }
+        }
+
+        @page {
+            size: A4;
+            margin: 14mm 13mm 15mm
+        }
+
+        @media print {
+            html {
+                scroll-behavior: auto
+            }
+
+            body {
+                background: #fff;
+                color: #111;
+                font: 10pt/1.42 Arial, Helvetica, sans-serif;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact
+            }
+
+            .wrap {
+                max-width: none;
+                margin: 0;
+                padding: 0
+            }
+
+            .hero {
+                box-shadow: none;
+                border: 0;
+                border-radius: 0;
+                background: #fff;
+                padding: 0 0 13px;
+                border-bottom: 1px solid #8eaa96
+            }
+
+            .hero::before {
+                display: none
+            }
+
+            .hero h1 {
+                font: 700 24pt/1.15 Arial, Helvetica, sans-serif;
+                color: #153c28;
+                margin-bottom: 9px
+            }
+
+            .hero p {
+                font-size: 10pt;
+                margin: 4px 0
+            }
+
+            .hero-meta {
+                margin-top: 10px
+            }
+
+            .pill {
+                font-size: 9pt;
+                border: 1px solid #c1d1c4;
+                padding: 2px 7px
+            }
+
+            .disclaimer {
+                font-size: 8.5pt !important
+            }
+
+            .layout {
+                display: block;
+                margin-top: 12px
+            }
+
+            .sidebar, .controls, .complete-line, .caret {
+                display: none !important
+            }
+
+            .main {
+                width: 100%
+            }
+
+            .lesson {
+                margin: 0 0 10px;
+                border: 0;
+                border-radius: 0;
+                box-shadow: none;
+                overflow: visible;
+                page-break-inside: auto;
+                break-inside: auto
+            }
+
+            .lesson > summary {
+                padding: 8px 0 4px;
+                display: flex;
+                border-bottom: 1px solid #c5d8cb !important;
+                background: #fff !important;
+                cursor: auto
+            }
+
+            .lesson-title {
+                font-size: 14pt;
+                color: #145334
+            }
+
+            .num {
+                background: #fff;
+                border: 1px solid #aac7b3;
+                font-size: 8pt
+            }
+
+            .lesson-body {
+                display: block !important;
+                padding: 0 0 7px
+            }
+
+            .lesson-section {
+                margin: 9px 0 0
+            }
+
+            .lesson-section h3 {
+                font-size: 10.5pt;
+                color: #145334;
+                margin: 0 0 3px;
+                break-after: avoid;
+                page-break-after: avoid
+            }
+
+            .section-letter {
+                background: #fff;
+                border: 1px solid #c8d8cc;
+                width: 19px;
+                height: 19px;
+                font-size: 9pt;
+                margin-right: 6px
+            }
+
+            .lesson-section p, p {
+                margin: 4px 0 6px
+            }
+
+            .definition {
+                display: grid;
+                grid-template-columns:115px 1fr;
+                gap: 3px 9px;
+                background: #fff;
+                border: 1px solid #d5ded7;
+                border-radius: 0;
+                padding: 7px;
+                font-size: 9.2pt;
+                margin: 5px 0
+            }
+
+            .example {
+                background: #fff;
+                border-left: 2px solid #729782;
+                padding: 5px 10px
+            }
+
+            .example pre, pre {
+                background: #fff !important;
+                border: 1px solid #d6e1d9;
+                color: #111;
+                font-size: 8pt;
+                line-height: 1.28;
+                padding: 8px;
+                margin: 5px 0;
+                white-space: pre-wrap;
+                overflow: visible;
+                word-break: normal;
+                break-inside: avoid;
+                page-break-inside: avoid
+            }
+
+            .interview-q {
+                background: #fff;
+                border: 1px solid #c6d7cb;
+                border-radius: 0;
+                padding: 8px 10px;
+                color: #111;
+                font-weight: 600;
+                break-inside: avoid
+            }
+
+            .model-answer, .principal-answer {
+                background: #fff;
+                border: 1px solid #c3d7ca;
+                border-radius: 0;
+                break-inside: auto
+            }
+
+            .model-answer > summary, .principal-answer > summary {
+                background: #fff;
+                color: #145334;
+                font-size: 9.5pt;
+                padding: 5px 9px
+            }
+
+            .answer-content {
+                display: block !important;
+                padding: 6px 10px
+            }
+
+            .takeaways {
+                padding-left: 18px;
+                margin: 5px 0
+            }
+
+            .takeaways li {
+                padding: 0
+            }
+
+            .review {
+                border: 0;
+                padding: 6px 0 0;
+                break-before: auto
+            }
+
+            .review h2 {
+                font-size: 18pt;
+                margin: 12px 0 8px;
+                color: #145334
+            }
+
+            .review h3 {
+                font-size: 12pt;
+                color: #145334;
+                margin: 13px 0 5px
+            }
+
+            .review h4 {
+                margin: 9px 0 4px
+            }
+
+            .review-grid {
+                display: block
+            }
+
+            .info-card {
+                display: block;
+                background: #fff;
+                border: 1px solid #d0ded2;
+                margin: 6px 0;
+                padding: 9px;
+                break-inside: avoid
+            }
+
+            .review th {
+                background: #fff
+            }
+
+            .review table {
+                font-size: 8.5pt
+            }
+
+            .review th, .review td {
+                padding: 5px
+            }
+
+            .scenario {
+                break-inside: auto;
+                margin: 10px 0 0;
+                padding-top: 7px
+            }
+
+            .sources {
+                margin: 12px 0 0;
+                font-size: 8.5pt
+            }
+
+            .notice {
+                background: #fff;
+                border-left: 2px solid #739680
+            }
+
+            .print-hide {
+                display: none !important
+            }
+
+            h1, h2, h3, h4, summary {
+                break-after: avoid;
+                page-break-after: avoid
+            }
+
+            .lesson > summary {
+                break-inside: avoid;
+                page-break-inside: avoid
+            }
+
+            .answer-content p, .review p {
+                orphans: 3;
+                widows: 3
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="wrap" id="top">
+    <header class="hero">
+        <div class="eyebrow">Architecture Foundations · Interactive Learning
+            Guide
+        </div>
+        <h1>DDD &amp; Bounded Context<br>From First Principles to
+            Principal-Level Interviews</h1>
+        <p>20 lessons in the original learning order. Start with plain English,
+            examine one example, test yourself with an interview question, then
+            reveal a stronger architectural answer.</p>
+        <div class="hero-meta"><span class="pill">20 lessons</span><span
+                class="pill">Beginner → L5 Principal</span><span class="pill">One offline HTML file</span><span
+                class="pill">A4 print-ready</span></div>
+        <p class="disclaimer">Lesson concepts and examples follow our
+            conversation's Lessons 1–20. Interview answers and the Principal
+            review are additional study material. All business examples are
+            illustrative; they are not statements about real production
+            deployments.</p>
+    </header>
+    <noscript>
+        <div class="noscript"><strong>JavaScript is disabled.</strong> Every
+            lesson and model answer remains expanded and readable. Search,
+            progress saving, and bulk controls need JavaScript.
+        </div>
+    </noscript>
+    <div class="layout">
+        <aside class="sidebar" aria-label="Study navigation">
+            <h2>Study navigation</h2>
+            <label class="searchlabel" for="search">Find a concept</label>
+            <input type="search" id="search"
+                   placeholder="Search all 20 lessons…" autocomplete="off"
+                   aria-label="Search lessons by keyword">
+            <div class="searchcount" id="search-count" aria-live="polite">All 20
+                lessons shown
+            </div>
+            <div class="progress-wrap">
+                <div class="progress-heading">
+                    <span>Your learning progress</span><span id="progress-text"
+                                                             aria-live="polite">0 / 20 complete</span>
+                </div>
+                <progress id="progress" value="0" max="20">0 of 20</progress>
+            </div>
+            <nav aria-label="Table of contents">
+                <ul class="sidebar-nav">
+                    <li><a data-for="lesson-01"
+                           href="#lesson-01"><span>01</span> What is
+                        Domain-Driven Design (DDD)?</a></li>
+                    <li><a data-for="lesson-02"
+                           href="#lesson-02"><span>02</span> What is a Bounded
+                        Context?</a></li>
+                    <li><a data-for="lesson-03"
+                           href="#lesson-03"><span>03</span> What Does Boundary
+                        Mean in Bounded Context?</a></li>
+                    <li><a data-for="lesson-04"
+                           href="#lesson-04"><span>04</span> Why the Same Word
+                        Can Mean Different Things</a></li>
+                    <li><a data-for="lesson-05"
+                           href="#lesson-05"><span>05</span> How Do Bounded
+                        Contexts Communicate?</a></li>
+                    <li><a data-for="lesson-06"
+                           href="#lesson-06"><span>06</span> What is Ubiquitous
+                        Language?</a></li>
+                    <li><a data-for="lesson-07"
+                           href="#lesson-07"><span>07</span> What is a
+                        Subdomain?</a></li>
+                    <li><a data-for="lesson-08"
+                           href="#lesson-08"><span>08</span> What is a Core
+                        Subdomain?</a></li>
+                    <li><a data-for="lesson-09"
+                           href="#lesson-09"><span>09</span> What is a
+                        Supporting Subdomain?</a></li>
+                    <li><a data-for="lesson-10"
+                           href="#lesson-10"><span>10</span> What is a Generic
+                        Subdomain?</a></li>
+                    <li><a data-for="lesson-11"
+                           href="#lesson-11"><span>11</span> What is a Domain
+                        Model?</a></li>
+                    <li><a data-for="lesson-12"
+                           href="#lesson-12"><span>12</span> What is an Entity?</a>
+                    </li>
+                    <li><a data-for="lesson-13"
+                           href="#lesson-13"><span>13</span> What is a Value
+                        Object?</a></li>
+                    <li><a data-for="lesson-14"
+                           href="#lesson-14"><span>14</span> What is an
+                        Invariant?</a></li>
+                    <li><a data-for="lesson-15"
+                           href="#lesson-15"><span>15</span> What is an
+                        Aggregate?</a></li>
+                    <li><a data-for="lesson-16"
+                           href="#lesson-16"><span>16</span> What is an
+                        Aggregate Root?</a></li>
+                    <li><a data-for="lesson-17"
+                           href="#lesson-17"><span>17</span> What is a Domain
+                        Event?</a></li>
+                    <li><a data-for="lesson-18"
+                           href="#lesson-18"><span>18</span> What is an
+                        Integration Event?</a></li>
+                    <li><a data-for="lesson-19"
+                           href="#lesson-19"><span>19</span> What is a Context
+                        Map?</a></li>
+                    <li><a data-for="lesson-20"
+                           href="#lesson-20"><span>20</span> What are Upstream
+                        and Downstream Contexts?</a></li>
+                    <li class="reviewlink"><a href="#principal-review">Principal
+                        interview review</a></li>
+                    <li><a href="#sources">Official sources</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="main" id="content">
+            <div class="controls" aria-label="Study controls">
+                <button type="button" class="btn secondary" id="expand">Expand
+                    all
+                </button>
+                <button type="button" class="btn secondary" id="collapse">
+                    Collapse all
+                </button>
+                <button type="button" class="btn secondary" id="show-answers">
+                    Show answers
+                </button>
+                <button type="button" class="btn secondary" id="hide-answers">
+                    Hide answers
+                </button>
+                <button type="button" class="btn" id="print">Print / Save as
+                    PDF
+                </button>
+                <span class="controls-note">Complete lessons as you study. Progress saves in this browser when local storage is available.</span>
+            </div>
+            <p id="no-results" hidden class="notice">No matching lessons. Clear
+                the search box to show all 20.</p>
+            <details class="lesson" open id="lesson-01" data-lesson="1">
+                <summary><span class="num">LESSON 01</span><span
+                        class="lesson-title">What is Domain-Driven Design (DDD)?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>DDD means learning the business to gain a deep
+                            understanding of its language, and its rules before
+                            deciding how to organize complex software. It helps when
+                            many rules and teams must change the system over
+                            time.</p>
+                        <dl class="definition">
+                            <dt>Domain</dt>
+                            <dd>The business problem area we are trying to
+                                understand.
+                            </dd>
+                            <dt>DDD</dt>
+                            <dd>A design approach that places business knowledge
+                                at the center of software modeling.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>If
+                            rules are mixed together, one change can
+                            accidentally affect unrelated work.
+                            Business-centered models make responsibilities
+                            easier to discuss and test.</p>
+                        <p><span class="small-label">When to use it: </span>Use
+                            DDD for complex, changing business rules. For simple
+                            CRUD (create, read, update, delete) systems, a
+                            simpler design may be enough.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>An online shop accepts orders, processes payments,
+                            and ships goods. First ask which business decisions
+                            each activity makes; only then choose classes, APIs,
+                            and databases.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">ONLINE SHOPPING
+  |-- Ordering: accept / cancel order
+  |-- Payments: charge / refund
+  `-- Shipping: dispatch / track parcel</pre>
+                        <p>The model starts with what the company does, not the
+                            cloud product it uses.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">You inherit a large
+                            retail system. What does applying DDD change about
+                            your first two weeks of discovery?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> I would interview sales,
+                                operations, finance, and delivery experts; walk
+                                through a purchase and a return; collect
+                                business terms and rules; and map decisions and
+                                ownership. I would identify areas whose rules
+                                change together and areas that need different
+                                models. Only after that would I propose modules
+                                or services.</p>
+                                <p><strong>Trade-off / limitation:</strong> DDD
+                                    discovery costs time and access to experts.
+                                    I would use it selectively in rules-heavy
+                                    areas; straightforward reference-data CRUD
+                                    may not justify rich modeling.</p>
+                                <p><strong>Mistake to avoid:</strong> I would
+                                    not turn every business noun into a service
+                                    or claim DDD means microservices.</p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Start from business behavior, not
+                                infrastructure.
+                            </li>
+                            <li>Use domain experts to uncover rules.</li>
+                            <li>DDD helps with complex domains, not every CRUD
+                                screen.
+                            </li>
+                            <li>DDD is not a synonym for microservices.</li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="1"
+                                                             aria-label="Mark lesson 1 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-02" data-lesson="2">
+                <summary><span class="num">LESSON 02</span><span
+                        class="lesson-title">What is a Bounded Context?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>A bounded context is a clear boundary within which
+                            one business model and its words have specific
+                            meanings. Ordering and Shipping may talk about the
+                            same purchase, but each needs different rules and
+                            information. A boundary tells us which model applies
+                            where.</p>
+                        <dl class="definition">
+                            <dt>Bounded Context</dt>
+                            <dd>The scope where a particular domain model is
+                                valid.
+                            </dd>
+                            <dt>Model</dt>
+                            <dd>The concepts, data, and behavior used to
+                                represent business work.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>It
+                            prevents unrelated teams from being forced to share
+                            one oversized model.</p>
+                        <p><span class="small-label">When to use it: </span>Define
+                            contexts when parts of the business use different
+                            rules, vocabulary, lifecycles, or ownership.</p>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>Ordering manages purchase approval. Shipping manages
+                            carriers and delivery status. Both can refer to
+                            Order #1001, but they are not required to share all
+                            order fields.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">[ Ordering model ]      [ Shipping model ]
+  Order #1001              Parcel #P77
+  buyer, items             carrier, tracking
+  confirmed                in transit</pre>
+                        <p>One real purchase can appear as different models
+                            inside different boundaries.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">Must each bounded
+                            context become one microservice and one database?
+                            Explain.
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> No. A bounded context defines a
+                                model boundary, not a deployment unit. I would
+                                first identify independent rules, data
+                                ownership, and team accountability. Then I might
+                                implement the contexts as modules in one
+                                application, or as services if independent
+                                release and scaling justify the cost.</p>
+                                <p><strong>Trade-off / limitation:</strong>
+                                    Separate services add network latency,
+                                    distributed failures, security surfaces, and
+                                    eventual-consistency work. A modular
+                                    monolith is often the safer first step.</p>
+                                <p><strong>Mistake to avoid:</strong> A
+                                    department, API, database table, and bounded
+                                    context are not automatically the same
+                                    thing.</p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>One context means one coherent model.</li>
+                            <li>Contexts can exchange information.</li>
+                            <li>Bounded context is not equal to microservice.
+                            </li>
+                            <li>Choose boundaries from business rules, not
+                                tables.
+                            </li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="2"
+                                                             aria-label="Mark lesson 2 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-03" data-lesson="3">
+                <summary><span class="num">LESSON 03</span><span
+                        class="lesson-title">What Does Boundary Mean in Bounded Context?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>A boundary says where a team&#x27;s model and
+                            business responsibilities start and end. Ordering
+                            decides if a purchase can be placed or canceled.
+                            Payments handles the money movement. Shipping
+                            handles delivery. Each has rules it protects.</p>
+                        <dl class="definition">
+                            <dt>Boundary</dt>
+                            <dd>A clear limit around the rules and model a
+                                context is responsible for.
+                            </dd>
+                            <dt>Ownership</dt>
+                            <dd>The team or capability accountable for
+                                maintaining the model and its contracts.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>A
+                            clear limit reduces accidental changes and makes it
+                            easier to know whom to ask when a rule changes.</p>
+                        <p><span class="small-label">When to use it: </span>Draw
+                            boundaries when the same application has
+                            responsibilities that evolve for different business
+                            reasons.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>A laptop is returned. Ordering may decide whether the
+                            return meets policy. Payments executes the refund.
+                            Shipping arranges the parcel return.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">Ordering ---&gt; Payments ---&gt; Refund result
+    |
+    `----------&gt; Shipping ---&gt; Return label</pre>
+                        <p>A workflow may cross several boundaries without
+                            transferring ownership of every rule.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">Who decides refund
+                            eligibility and who transfers the money? Why not put
+                            both rules in one shared service?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> I would assign eligibility to
+                                the business capability that owns returns policy
+                                and execution to Payments. The workflow
+                                coordinates them through contracts. I would
+                                verify this with domain experts, because actual
+                                businesses may assign returns policy
+                                differently.</p>
+                                <p><strong>Trade-off / limitation:</strong> More
+                                    boundaries introduce coordination and
+                                    failure paths. Splitting two rules is useful
+                                    only when their meanings, ownership, or
+                                    changes are truly different.</p>
+                                <p><strong>Mistake to avoid:</strong> Do not
+                                    equate bounded contexts with organizational
+                                    departments. Teams and systems may cross
+                                    boundaries.</p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Boundaries identify rule ownership.</li>
+                            <li>A business workflow can cross several
+                                contexts.
+                            </li>
+                            <li>Ownership must be validated with domain
+                                experts.
+                            </li>
+                            <li>Avoid splitting solely by team chart.</li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="3"
+                                                             aria-label="Mark lesson 3 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-04" data-lesson="4">
+                <summary><span class="num">LESSON 04</span><span
+                        class="lesson-title">Why the Same Word Can Mean Different Things</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>Two business areas can use the same word but mean
+                            different things. An &#x27;Order&#x27; for Ordering
+                            describes what was bought; for Shipping it may be a
+                            reference to what must be delivered. DDD lets each
+                            context choose the details relevant to its work.</p>
+                        <dl class="definition">
+                            <dt>Context-specific meaning</dt>
+                            <dd>The interpretation of a business word within a
+                                particular model.
+                            </dd>
+                            <dt>Semantic mismatch</dt>
+                            <dd>When two areas use similar words but mean
+                                different things.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>A
+                            universal object with every possible field often
+                            becomes hard to change and easy to misuse.</p>
+                        <p><span class="small-label">When to use it: </span>Look
+                            for different lifecycles, fields, or rules behind
+                            familiar words such as Customer, Account, Order, or
+                            Status.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>Ordering stores products, price, and cancellation
+                            state. Shipping stores carrier, parcel tracking, and
+                            delivery state. Both may reference Order #1001.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">ORDERING: Order {items, price, confirmed}
+SHIPPING:  Delivery {orderId, carrier, ETA}</pre>
+                        <p>The shared order ID links the work; it does not
+                            require identical domain models.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">CRM and Billing both
+                            store &#x27;Customer&#x27;. Should you enforce one
+                            enterprise Customer class?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> I would first compare meanings
+                                and lifecycle. CRM may own a prospect and
+                                contact relationship; Billing may own the liable
+                                payer and invoice address. I would keep distinct
+                                domain models if the rules differ, connect them
+                                with stable references and explicit
+                                translations, and define authoritative ownership
+                                for each fact.</p>
+                                <p><strong>Trade-off / limitation:</strong>
+                                    Separate models create mapping and
+                                    synchronization cost. A small stable shared
+                                    identifier can help, but sharing the whole
+                                    object creates change coupling.</p>
+                                <p><strong>Mistake to avoid:</strong> An
+                                    enterprise-wide canonical Customer object is
+                                    not automatically the cleanest solution.</p>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Words get meaning from their context.</li>
+                            <li>A shared identifier is not a shared model.</li>
+                            <li>Avoid a giant universal domain entity.</li>
+                            <li>Translate meanings explicitly at context
+                                boundaries.
+                            </li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="4"
+                                                             aria-label="Mark lesson 4 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-05" data-lesson="5">
+                <summary><span class="num">LESSON 05</span><span
+                        class="lesson-title">How Do Bounded Contexts Communicate?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>Bounded contexts can communicate without using each
+                            other&#x27;s private models. They exchange only the
+                            information they need through an agreed interface,
+                            such as an API call or a published event.</p>
+                        <dl class="definition">
+                            <dt>API</dt>
+                            <dd>An agreed way for one system to request data or
+                                an action.
+                            </dd>
+                            <dt>Contract</dt>
+                            <dd>The agreed message structure, meanings, and
+                                expected behavior.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>A
+                            stable contract lets one area change its internal
+                            implementation without forcing changes everywhere
+                            else.</p>
+                        <p><span class="small-label">When to use it: </span>Use
+                            synchronous requests for immediate answers; use
+                            events when other areas can react after a business
+                            change.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>Shipping finishes delivery and tells Ordering that
+                            Order #1001 was delivered. Ordering does not need to
+                            know the carrier&#x27;s route-planning
+                            algorithm.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">[Shipping] -- DeliveryCompleted(orderId) --&gt; [Ordering]
+     private carrier details stay in Shipping</pre>
+                        <p>Information crosses the boundary; private shipping
+                            rules do not.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">When Shipping changes
+                            from FedEx to UPS, should Ordering need a release?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> Not if the published contract
+                                remains compatible and Ordering depends only on
+                                meaningful delivery facts. I would document
+                                events or APIs, version them carefully, and use
+                                contract tests so teams can release safely.</p>
+                                <p><strong>Trade-off / limitation:</strong>
+                                    Synchronous calls are simple but create
+                                    runtime dependency; events reduce direct
+                                    timing coupling but add delay, duplicates,
+                                    and monitoring needs.</p>
+                                <p><strong>Mistake to avoid:</strong> Do not
+                                    expose internal database tables as the
+                                    integration contract.</p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Contexts communicate via explicit contracts.
+                            </li>
+                            <li>Keep internal details private.</li>
+                            <li>Choose API or event based on timing needs.</li>
+                            <li>Test compatibility before changing contracts.
+                            </li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="5"
+                                                             aria-label="Mark lesson 5 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-06" data-lesson="6">
+                <summary><span class="num">LESSON 06</span><span
+                        class="lesson-title">What is Ubiquitous Language?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>Ubiquitous Language means business people and
+                            developers agree on words and use them consistently
+                            within one bounded context. The words appear in
+                            meetings, requirements, tests, and code.</p>
+                        <dl class="definition">
+                            <dt>Ubiquitous Language</dt>
+                            <dd>Shared vocabulary within a bounded context.</dd>
+                            <dt>Domain expert</dt>
+                            <dd>A person who understands the actual business
+                                rules.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>A
+                            precise shared vocabulary prevents defects caused by
+                            misunderstood business terms.</p>
+                        <p><span class="small-label">When to use it: </span>Create
+                            it during discovery and refine it whenever
+                            requirements expose ambiguous terms.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>Shipping agrees that &#x27;Shipped&#x27; means a
+                            parcel left the warehouse, while &#x27;Delivered&#x27;
+                            means receipt was confirmed. Developers use these
+                            meanings in status fields and tests.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">Shipped   = handed to carrier
+InTransit = moving through network
+Delivered = confirmed at destination</pre>
+                        <p>Each status has one agreed meaning inside
+                            Shipping.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">The business says &#x27;Delivered&#x27;
+                            means received, but the code uses it after dispatch.
+                            How do you correct this?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> I would bring operations and
+                                developers together to define the status
+                                transitions, revise the glossary and code names,
+                                and create acceptance tests for each transition.
+                                If a public contract already uses the incorrect
+                                meaning, I would plan a compatible migration
+                                rather than silently changing it.</p>
+                                <p><strong>Trade-off / limitation:</strong>
+                                    Shared language needs care as the business
+                                    changes; not every word must mean the same
+                                    thing in every bounded context.</p>
+                                <p><strong>Mistake to avoid:</strong> Changing a
+                                    field label without changing the associated
+                                    rule and contract does not fix semantic
+                                    confusion.</p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Agree on terms with domain experts.</li>
+                            <li>Use those terms in code and tests.</li>
+                            <li>Different contexts may use different meanings.
+                            </li>
+                            <li>Protect consumers when changing public status
+                                semantics.
+                            </li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="6"
+                                                             aria-label="Mark lesson 6 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-07" data-lesson="7">
+                <summary><span class="num">LESSON 07</span><span
+                        class="lesson-title">What is a Subdomain?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>A domain is the larger business problem. A subdomain
+                            is one smaller business problem inside it. For an
+                            online shop, Ordering, Payments, Shipping, and
+                            Inventory Management are possible subdomains.</p>
+                        <dl class="definition">
+                            <dt>Domain</dt>
+                            <dd>The complete business area being studied.</dd>
+                            <dt>Subdomain</dt>
+                            <dd>A distinct part of that business problem.</dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>Subdomains
+                            help architects see business capabilities before
+                            choosing application or service boundaries.</p>
+                        <p><span class="small-label">When to use it: </span>Use
+                            subdomain discovery when planning a new platform,
+                            modernizing a legacy system, or deciding
+                            investments.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>An online shop needs to count laptops in stock.
+                            Inventory Management is one subdomain of online
+                            commerce.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">ONLINE COMMERCE DOMAIN
+  |-- Ordering
+  |-- Payments
+  |-- Inventory
+  `-- Shipping</pre>
+                        <p>Inventory is a part of the problem domain, not a
+                            database technology.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">How is a subdomain
+                            different from a bounded context? Can you always
+                            pair one with one?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> A subdomain describes a
+                                business problem; a bounded context marks where
+                                a model is valid in software. I would discover
+                                subdomains first and choose bounded contexts
+                                based on language, rules, and consistency. Their
+                                boundaries often align, but they do not have to
+                                match one-to-one.</p>
+                                <p><strong>Trade-off / limitation:</strong>
+                                    Forcing a direct one-to-one mapping can hide
+                                    complexity or create too many models. I
+                                    would check model cohesion and integration
+                                    cost before drawing lines.</p>
+                                <p><strong>Mistake to avoid:</strong> A
+                                    subdomain is not automatically an existing
+                                    application, module, or department.</p>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Domain = broader business problem.</li>
+                            <li>Subdomain = smaller business capability.</li>
+                            <li>Subdomains help discovery.</li>
+                            <li>Subdomain and bounded context are not
+                                identical.
+                            </li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="7"
+                                                             aria-label="Mark lesson 7 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-08" data-lesson="8">
+                <summary><span class="num">LESSON 08</span><span
+                        class="lesson-title">What is a Core Subdomain?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>A core subdomain is a business area that gives a
+                            company a competitive advantage. A price-focused
+                            retailer may differentiate through Pricing. A
+                            rapid-delivery company may differentiate through
+                            Delivery Planning.</p>
+                        <dl class="definition">
+                            <dt>Core Subdomain</dt>
+                            <dd>The business capability most important to
+                                differentiating the company.
+                            </dd>
+                            <dt>Competitive advantage</dt>
+                            <dd>A reason customers choose one provider over
+                                alternatives.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>Core
+                            areas deserve focused expertise and tailored design
+                            because they help the business win.</p>
+                        <p><span class="small-label">When to use it: </span>Classify
+                            a capability as core after checking the company&#x27;s
+                            actual strategy, not just because its system is
+                            large.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>A bank wins customers by approving loans in five
+                            minutes with a unique assessment method. Loan Risk
+                            Assessment is a candidate core subdomain.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">BANK DIFFERENTIATOR: fast, trusted approvals
+  `-- Core: Loan Risk Assessment</pre>
+                        <p>The uniqueness of its decision process matters more
+                            than the number of screens it has.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">A bank says loan
+                            underwriting is core. How does that affect
+                            build-versus-buy?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> I would preserve control over
+                                the differentiating underwriting policy and
+                                decision model, invest in domain experts and
+                                testable invariants, and evaluate vendors only
+                                where they preserve required flexibility and
+                                compliance. I would measure approval speed, risk
+                                outcomes, and change lead time.</p>
+                                <p><strong>Trade-off / limitation:</strong>
+                                    Building every component in-house is
+                                    expensive; even core areas can rely on
+                                    bought infrastructure or commodity tools.
+                                </p>
+                                <p><strong>Mistake to avoid:</strong> Core does
+                                    not mean the largest team, the most
+                                    expensive system, or mandatory custom code
+                                    everywhere.</p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Core means strategic differentiation.</li>
+                            <li>Validate core status against business
+                                strategy.
+                            </li>
+                            <li>Invest design effort where rules
+                                differentiate.
+                            </li>
+                            <li>Buy commodity support even within a core
+                                capability when sensible.
+                            </li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="8"
+                                                             aria-label="Mark lesson 8 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-09" data-lesson="9">
+                <summary><span class="num">LESSON 09</span><span
+                        class="lesson-title">What is a Supporting Subdomain?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>A supporting subdomain is needed for a company to
+                            work, but is not itself its main competitive
+                            advantage. It may still require custom rules or
+                            close integration with the core business.</p>
+                        <dl class="definition">
+                            <dt>Supporting Subdomain</dt>
+                            <dd>An enabling business area that is not the main
+                                differentiator.
+                            </dd>
+                            <dt>Custom rules</dt>
+                            <dd>Rules specific to how this company runs a
+                                process.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>This
+                            category helps teams allocate limited budget and
+                            engineering attention sensibly.</p>
+                        <p><span class="small-label">When to use it: </span>Use
+                            this classification when a capability supports
+                            important workflows but does not distinguish the
+                            company in the market.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>A bank&#x27;s unique loan risk method is core. Its
+                            loan document collection workflow supports approvals
+                            but may not be the bank&#x27;s selling point.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">Core: Loan Risk Assessment
+  depends on
+Supporting: Loan Document Collection</pre>
+                        <p>The document process matters, even if it is not why
+                            customers choose the bank.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">Would you automatically
+                            outsource a supporting subdomain?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> No. I would compare the
+                                uniqueness of requirements, available products,
+                                integration complexity, security, and lifecycle
+                                cost. A supporting capability may still need
+                                tailored code because of regulation or unusual
+                                workflow. I would try to spend less bespoke
+                                effort there than on the core differentiator.
+                            </p>
+                                <p><strong>Trade-off / limitation:</strong>
+                                    Supporting does not mean dispensable.
+                                    Failure can still stop revenue or violate
+                                    obligations.</p>
+                                <p><strong>Mistake to avoid:</strong> Avoid
+                                    assuming only core work needs reliability,
+                                    monitoring, or ownership.</p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Supporting capabilities enable the business.
+                            </li>
+                            <li>They can require custom implementation.</li>
+                            <li>Their importance is not the same as
+                                differentiation.
+                            </li>
+                            <li>Use risk and requirements—not labels alone—for
+                                funding decisions.
+                            </li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="9"
+                                                             aria-label="Mark lesson 9 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-10" data-lesson="10">
+                <summary><span class="num">LESSON 10</span><span
+                        class="lesson-title">What is a Generic Subdomain?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>A generic subdomain is a common problem that many
+                            organizations share and that existing products often
+                            solve well. Employee payroll and workplace email are
+                            examples for a typical bank.</p>
+                        <dl class="definition">
+                            <dt>Generic Subdomain</dt>
+                            <dd>A common business problem with established,
+                                reusable solutions.
+                            </dd>
+                            <dt>Buy-versus-build</dt>
+                            <dd>The choice between adopting a product and
+                                writing custom software.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>Recognizing
+                            generic needs helps avoid spending scarce
+                            engineering time reinventing standard tools.</p>
+                        <p><span class="small-label">When to use it: </span>Look
+                            for trusted existing products when business
+                            requirements are standard and switching or
+                            integration risks are manageable.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>A bank needs employee email. It can evaluate an
+                            established enterprise email product rather than
+                            create a mail platform.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">Bank: Loan Risk -&gt; custom advantage
+Bank: Employee Email -&gt; common solution</pre>
+                        <p>Email is necessary but does not usually define the
+                            bank&#x27;s lending advantage.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">When is buying a generic
+                            solution a poor choice?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> I would usually evaluate
+                                products first, checking capabilities, cost,
+                                availability, security, residency, lock-in, exit
+                                path, and integration. I might build a thin
+                                solution if available products cannot meet
+                                material constraints or the lifecycle cost is
+                                excessive.</p>
+                                <p><strong>Trade-off / limitation:</strong>
+                                    Buying reduces custom development but adds
+                                    vendors, contracts, migration, and sometimes
+                                    restricted customization.</p>
+                                <p><strong>Mistake to avoid:</strong> Generic
+                                    does not mean low risk or that procurement
+                                    due diligence can be skipped.</p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Generic = widely shared problem.</li>
+                            <li>Evaluate existing solutions first.</li>
+                            <li>Assess vendor and integration risks.</li>
+                            <li>Generic systems can still be
+                                business-critical.
+                            </li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="10"
+                                                             aria-label="Mark lesson 10 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-11" data-lesson="11">
+                <summary><span class="num">LESSON 11</span><span
+                        class="lesson-title">What is a Domain Model?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>A domain model is a clear representation of business
+                            concepts, their information, their behavior, and
+                            rules. It is more than a collection of database
+                            columns.</p>
+                        <dl class="definition">
+                            <dt>Domain Model</dt>
+                            <dd>The business concepts and rules represented in
+                                software.
+                            </dd>
+                            <dt>Behavior</dt>
+                            <dd>A business action, such as approving or
+                                canceling an application.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>It
+                            makes important rules visible and reduces the chance
+                            that unrelated code bypasses them.</p>
+                        <p><span class="small-label">When to use it: </span>Use
+                            richer models when business rules are complex or
+                            likely to change; simple CRUD may not need the same
+                            structure.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>A bank&#x27;s LoanApplication has an ID, amount, and
+                            status. It also has an approve() action that checks
+                            risk assessment first.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">LoanApplication
+  id: LA1001
+  amount: 50000 USD
+  status: Pending
+  approve() -&gt; checks risk passed</pre>
+                        <p>The model includes what the loan knows and what it is
+                            allowed to do.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">What is the problem with
+                            LoanApplication being only a data record while any
+                            API can set its status?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> If every caller can write any
+                                status, the approval invariant may be bypassed.
+                                For a complex loan workflow I would put valid
+                                transitions in the domain model and call them
+                                through an application layer. I would test
+                                failed and successful transitions with business
+                                experts.</p>
+                                <p><strong>Trade-off / limitation:</strong> Rich
+                                    domain models add classes and discipline.
+                                    For trivial data entry, simple transactional
+                                    code may be cheaper and clearer.</p>
+                                <p><strong>Mistake to avoid:</strong> Do not
+                                    confuse an ORM row mapping with the full
+                                    business domain model.</p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Models contain meaning and rules, not just
+                                fields.
+                            </li>
+                            <li>Business operations should protect valid
+                                state.
+                            </li>
+                            <li>Use complexity to justify richer modeling.</li>
+                            <li>A database schema is not the full domain
+                                model.
+                            </li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="11"
+                                                             aria-label="Mark lesson 11 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-12" data-lesson="12">
+                <summary><span class="num">LESSON 12</span><span
+                        class="lesson-title">What is an Entity?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>An entity is a business object whose identity matters
+                            over time. You can change some of its information
+                            and it remains the same object.</p>
+                        <dl class="definition">
+                            <dt>Entity</dt>
+                            <dd>A domain object distinguished by its identity
+                                and continuity.
+                            </dd>
+                            <dt>Identity</dt>
+                            <dd>A way to tell which specific business object we
+                                mean.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>Identity
+                            prevents two similar records from being mistaken for
+                            one business object.</p>
+                        <p><span class="small-label">When to use it: </span>Use
+                            an entity when a business object must be tracked
+                            across changes, such as a loan application, order,
+                            or payment.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>Loan LA1001 starts as Pending and later becomes
+                            Approved. It is still LA1001. Another loan LA1002
+                            may have the same amount, but is different.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">LA1001: 50000, Pending -&gt; Approved
+LA1002: 50000, Pending
+Different identities; not the same loan.</pre>
+                        <p>Changes to status do not erase the first application&#x27;s
+                            identity.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">Are two loan
+                            applications with identical amount and status the
+                            same entity?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> Not necessarily. If they have
+                                different application identities, they are
+                                different entities. I would define identity
+                                scope and lifecycle carefully, especially across
+                                imports or systems that use different IDs; a
+                                shared key alone does not require shared
+                                business rules.</p>
+                                <p><strong>Trade-off / limitation:</strong>
+                                    Maintaining global identifiers can increase
+                                    mapping complexity. Define the authoritative
+                                    issuer and deduplication logic.</p>
+                                <p><strong>Mistake to avoid:</strong> Comparing
+                                    all fields for equality is not appropriate
+                                    for identity-based entities.</p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Entity identity survives property changes.</li>
+                            <li>Same attributes do not imply same entity.</li>
+                            <li>Identity scope and lifecycle matter.</li>
+                            <li>Same ID across contexts does not imply identical
+                                domain models.
+                            </li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="12"
+                                                             aria-label="Mark lesson 12 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-13" data-lesson="13">
+                <summary><span class="num">LESSON 13</span><span
+                        class="lesson-title">What is a Value Object?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>A value object is defined by its values, not by an
+                            independent business identity. A Money value can
+                            contain both an amount and a currency. Two Money
+                            values with the same amount and currency are
+                            equal.</p>
+                        <dl class="definition">
+                            <dt>Value Object</dt>
+                            <dd>An object identified by its attributes rather
+                                than an ID.
+                            </dd>
+                            <dt>Immutable</dt>
+                            <dd>Not edited in place after it is created; replace
+                                with a new value instead.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>Value
+                            objects make small rules easier to validate and
+                            compare correctly.</p>
+                        <p><span class="small-label">When to use it: </span>Use
+                            value objects for amounts, measurements, dates, or
+                            addresses when the context does not track them as
+                            separate entities.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>Two different loans each contain Money(50000, &#x27;USD&#x27;).
+                            The loans are different entities; their Money values
+                            are equal.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">Money(50000, USD) == Money(50000, USD)
+Money(50000, USD) != Money(50000, EUR)</pre>
+                        <p>Currency is part of the value, so an amount alone is
+                            not enough.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">Why model Money as
+                            amount plus currency rather than a decimal?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> A Money value object prevents
+                                invalid comparisons between currencies and
+                                centralizes validation. I would make it
+                                immutable and require explicit conversion rules
+                                outside equality. In the loan model, replacing
+                                the loan amount creates a new Money value while
+                                preserving loan identity.</p>
+                                <p><strong>Trade-off / limitation:</strong> More
+                                    small types add mapping and serialization
+                                    work. Use them where they clarify real
+                                    business constraints.</p>
+                                <p><strong>Mistake to avoid:</strong> An address
+                                    could be a value object in Ordering but an
+                                    entity in a property-management domain;
+                                    classification depends on the context.</p>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Value equality uses attributes.</li>
+                            <li>Value objects have no domain identity.</li>
+                            <li>Prefer immutability.</li>
+                            <li>Classification depends on business meaning.</li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="13"
+                                                             aria-label="Mark lesson 13 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-14" data-lesson="14">
+                <summary><span class="num">LESSON 14</span><span
+                        class="lesson-title">What is an Invariant?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>An invariant is a business rule that must remain true
+                            whenever a domain object is in a valid completed
+                            state. A loan cannot reach Approved unless its
+                            required risk assessment passed.</p>
+                        <dl class="definition">
+                            <dt>Invariant</dt>
+                            <dd>A rule that a valid business state must always
+                                satisfy.
+                            </dd>
+                            <dt>Validation</dt>
+                            <dd>A check that prevents unacceptable data or
+                                actions.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>Invariants
+                            stop callers, APIs, and background jobs from leaving
+                            business objects invalid.</p>
+                        <p><span class="small-label">When to use it: </span>Define
+                            them when errors would create invalid financial,
+                            legal, inventory, or workflow states.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>The bank rejects approve() if riskPassed is false,
+                            even if an API user requests Approved directly.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">approveLoan():
+  if riskAssessment != PASSED:
+      reject approval
+  else:
+      status = APPROVED</pre>
+                        <p>The model—not just the screen—enforces the required
+                            approval rule.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">Where should you enforce
+                            a loan approval invariant, and what about concurrent
+                            requests?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> I would enforce it in the
+                                domain operation so all application entry points
+                                use the same rule, and use a transaction or
+                                concurrency control to stop races from violating
+                                it. I would cover the rule with domain tests and
+                                audit rejected transitions.</p>
+                                <p><strong>Trade-off / limitation:</strong>
+                                    Global invariants spanning multiple
+                                    independently committed services are harder;
+                                    I would redesign boundaries or use an
+                                    explicit business workflow and
+                                    reconciliation.</p>
+                                <p><strong>Mistake to avoid:</strong> UI-only
+                                    checks are insufficient; another client or
+                                    background process can bypass them.</p>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>An invariant defines valid state.</li>
+                            <li>Enforce it at the domain boundary.</li>
+                            <li>Concurrency may need transactional controls.
+                            </li>
+                            <li>UI-only validation cannot protect the rule.</li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="14"
+                                                             aria-label="Mark lesson 14 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-15" data-lesson="15">
+                <summary><span class="num">LESSON 15</span><span
+                        class="lesson-title">What is an Aggregate?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>An aggregate is a small consistency boundary around
+                            related domain objects and their business rules. It
+                            is designed around what must change together
+                            safely—not everything that is connected in a
+                            database.</p>
+                        <dl class="definition">
+                            <dt>Aggregate</dt>
+                            <dd>A boundary for domain objects that must keep
+                                specific rules consistent in one transaction.
+                            </dd>
+                            <dt>Consistency</dt>
+                            <dd>The state follows its required business rules
+                                after a change.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>A
+                            clear aggregate makes transaction scope and allowed
+                            changes explicit.</p>
+                        <p><span class="small-label">When to use it: </span>Use
+                            aggregates when multiple related values must be
+                            protected together, such as order items and order
+                            totals.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>A shopper changes laptop quantity from 2 to 3. In
+                            this simplified order design, Order and its items
+                            form an aggregate; the total updates from $2,000 to
+                            $3,000.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">ORDER AGGREGATE
+  Order #1001
+    `-- Item: Laptop x3 @ $1000
+  total = $3000</pre>
+                        <p>The business rule linking quantity and total stays
+                            consistent.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">Would you put Customer,
+                            Order, Shipment, and Payment in one aggregate?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> Usually not. I would identify
+                                which rules must be atomically consistent and
+                                group only the data needed to enforce those
+                                rules. Order plus OrderItems may be appropriate;
+                                Payments and Shipments usually have separate
+                                lifecycles and consistency boundaries.</p>
+                                <p><strong>Trade-off / limitation:</strong>
+                                    Large aggregates cause contention, long
+                                    transactions, and reduced throughput. Small
+                                    aggregates need inter-aggregate
+                                    coordination, often with events and eventual
+                                    consistency.</p>
+                                <p><strong>Mistake to avoid:</strong> An
+                                    aggregate is not simply a graph of all
+                                    objects with foreign keys.</p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Aggregate = transactional consistency
+                                boundary.
+                            </li>
+                            <li>Group by invariants, not relationships alone.
+                            </li>
+                            <li>Avoid very large aggregates.</li>
+                            <li>Across aggregates, plan for coordination and
+                                delay.
+                            </li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="15"
+                                                             aria-label="Mark lesson 15 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-16" data-lesson="16">
+                <summary><span class="num">LESSON 16</span><span
+                        class="lesson-title">What is an Aggregate Root?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>An aggregate root is the main entity that controls
+                            changes inside its aggregate. Other code asks the
+                            root to make a change so the root can enforce the
+                            rules.</p>
+                        <dl class="definition">
+                            <dt>Aggregate Root</dt>
+                            <dd>The entity that is the allowed entry point for
+                                changing an aggregate.
+                            </dd>
+                            <dt>Encapsulation</dt>
+                            <dd>Keeping internal details behind controlled
+                                operations.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>It
+                            prevents code from changing a child object and
+                            forgetting a related rule.</p>
+                        <p><span class="small-label">When to use it: </span>Use
+                            it for every aggregate so changes pass through one
+                            clearly responsible object.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>The customer wants one fewer laptop. The application
+                            calls Order.changeQuantity(itemId, 1); Order checks
+                            the state and recalculates the total.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">Application
+  -&gt; Order.changeQuantity(itemId, 1)
+       -&gt; checks rules
+       -&gt; updates OrderItem
+       -&gt; recalculates total</pre>
+                        <p>The child item is not directly edited by the API.</p>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">Why should an OrderItem
+                            quantity not be changed directly from the HTTP
+                            controller?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> The Order root owns invariants
+                                such as valid quantities, allowed order states,
+                                and total calculation. I would expose
+                                intentional operations on Order, keep child
+                                collections controlled, and persist the
+                                aggregate consistently.</p>
+                                <p><strong>Trade-off / limitation:</strong> This
+                                    creates more method design work than raw
+                                    table updates. It pays off in complex
+                                    domains with important rules.</p>
+                                <p><strong>Mistake to avoid:</strong> Do not
+                                    make an aggregate root a huge coordinator
+                                    for other bounded contexts; it should guard
+                                    its own aggregate.</p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>The root is the update entry point.</li>
+                            <li>It protects aggregate invariants.</li>
+                            <li>Expose business actions, not unrestricted
+                                setters.
+                            </li>
+                            <li>Do not turn roots into system-wide
+                                orchestrators.
+                            </li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="16"
+                                                             aria-label="Mark lesson 16 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-17" data-lesson="17">
+                <summary><span class="num">LESSON 17</span><span
+                        class="lesson-title">What is a Domain Event?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>A domain event records a meaningful fact that has
+                            already happened in a business model. &#x27;OrderPlaced&#x27;
+                            describes a completed action; &#x27;PlaceOrder&#x27;
+                            is a request, not a completed fact.</p>
+                        <dl class="definition">
+                            <dt>Domain Event</dt>
+                            <dd>A meaningful past event in the domain.</dd>
+                            <dt>Handler</dt>
+                            <dd>Code that reacts to an event without being
+                                embedded in the original business action.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>Events
+                            express important business facts and separate
+                            follow-up behavior from the action that triggered
+                            it.</p>
+                        <p><span class="small-label">When to use it: </span>Use
+                            a domain event when other logic inside the same
+                            domain or application should react to a completed
+                            change.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>After an order is placed, an OrderPlaced domain event
+                            can trigger internal follow-up behavior. The
+                            notification application may later send a
+                            confirmation email.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">Command: PlaceOrder
+  -&gt; Order is created
+  -&gt; Domain Event: OrderPlaced
+  -&gt; Internal handler reacts</pre>
+                        <p>The event is a past-tense statement about an actual
+                            business change.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">How would you
+                            distinguish a command from a domain event and avoid
+                            partial failure?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> A command asks for work; a
+                                domain event says meaningful work happened. I
+                                would raise the event from the domain operation
+                                and decide whether handlers must join the local
+                                transaction or run later. I would define the
+                                failure semantics rather than assuming all
+                                handlers succeed automatically.</p>
+                                <p><strong>Trade-off / limitation:</strong>
+                                    Immediate handlers are easier to reason
+                                    about transactionally but increase coupling
+                                    and latency; deferred processing needs
+                                    reliable delivery and recovery.</p>
+                                <p><strong>Mistake to avoid:</strong> Do not use
+                                    &#x27;OrderPlaced&#x27; before the order
+                                    really exists, or treat every technical log
+                                    message as a domain event.</p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Events describe the past; commands request
+                                action.
+                            </li>
+                            <li>Events communicate meaningful facts.</li>
+                            <li>Choose dispatch timing intentionally.</li>
+                            <li>Domain events do not by themselves guarantee
+                                cross-service delivery.
+                            </li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="17"
+                                                             aria-label="Mark lesson 17 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-18" data-lesson="18">
+                <summary><span class="num">LESSON 18</span><span
+                        class="lesson-title">What is an Integration Event?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>An integration event communicates a committed
+                            business change to another bounded context or
+                            system. It often travels asynchronously through a
+                            messaging system.</p>
+                        <dl class="definition">
+                            <dt>Integration Event</dt>
+                            <dd>A published fact intended for another system or
+                                bounded context.
+                            </dd>
+                            <dt>Asynchronous</dt>
+                            <dd>The sender and receiver do not need to finish
+                                work at the same instant.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>It
+                            lets other contexts react without reading or
+                            changing the producer&#x27;s private data directly.
+                        </p>
+                        <p><span class="small-label">When to use it: </span>Use
+                            it when several applications need to learn about a
+                            change and immediate request-response is
+                            unnecessary.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>Payments records a successful payment and later
+                            publishes PaymentCompleted. Ordering updates its
+                            payment view; Shipping may use an approved
+                            delivery-release event depending on business
+                            policy.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">Payments: commit payment
+  -&gt; PaymentCompleted integration event
+  -&gt; Ordering consumes
+  -&gt; Ordering updates its own view</pre>
+                        <p>The sender reports a durable fact, and each consumer
+                            decides how to react.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">What happens if Payments
+                            commits but publishing PaymentCompleted fails?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> I would avoid a fragile
+                                database-write-plus-broker-send sequence. A
+                                transactional outbox can persist payment state
+                                and an event record atomically, then publish
+                                with retries. Consumers must handle duplicates
+                                and stale or out-of-order messages, with
+                                monitoring and reconciliation.</p>
+                                <p><strong>Trade-off / limitation:</strong>
+                                    Events improve loose coupling but add
+                                    eventual consistency, schema evolution, and
+                                    operational complexity. An API may be
+                                    simpler for immediate queries.</p>
+                                <p><strong>Mistake to avoid:</strong> A domain
+                                    event and a public integration event need
+                                    not share the same payload, name, or
+                                    lifecycle.</p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Integration events cross system boundaries.</li>
+                            <li>Publish only committed business facts.</li>
+                            <li>Plan duplicates, lag, and recovery.</li>
+                            <li>Do not expose private aggregate structures as
+                                public events.
+                            </li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="18"
+                                                             aria-label="Mark lesson 18 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-19" data-lesson="19">
+                <summary><span class="num">LESSON 19</span><span
+                        class="lesson-title">What is a Context Map?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>A context map is a diagram showing bounded contexts
+                            and their relationships. It is more than a box
+                            drawing: it records how contexts depend on each
+                            other and where their models need translation.</p>
+                        <dl class="definition">
+                            <dt>Context Map</dt>
+                            <dd>A map of bounded contexts and the relationships
+                                between them.
+                            </dd>
+                            <dt>Integration point</dt>
+                            <dd>Where information or work crosses a boundary.
+                            </dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>A
+                            map reveals coupling and unclear ownership before
+                            teams invest in code.</p>
+                        <p><span class="small-label">When to use it: </span>Create
+                            it during architecture discovery and revisit it when
+                            integration or team ownership changes.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>An online store maps Ordering, Payments, and
+                            Shipping. The arrows name requests or events, not
+                            shared database joins.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">[Ordering] -- PayRequest --&gt; [Payments]
+[Payments] -- PaymentCompleted --&gt; [Ordering]
+[Ordering] -- ReleaseDelivery --&gt; [Shipping]</pre>
+                        <p>The map exposes which contexts interact and what they
+                            exchange.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">What would you add to a
+                            context map for a legacy ERP, SaaS CRM, and new
+                            order system?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> I would show each model
+                                boundary, the owners of key facts, direction of
+                                dependencies, API or event contracts, and
+                                translations. I would mark legacy semantic
+                                mismatch and where an anti-corruption layer is
+                                needed. I would validate the diagram with the
+                                business and delivery teams.</p>
+                                <p><strong>Trade-off / limitation:</strong> A
+                                    detailed map can become stale, so I would
+                                    keep it focused on consequential contracts
+                                    and review it as part of architecture
+                                    decisions.</p>
+                                <p><strong>Mistake to avoid:</strong> A physical
+                                    deployment diagram alone is not a context
+                                    map; boxes and arrows need business meaning.
+                                </p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Maps show relationships between contexts.</li>
+                            <li>Label data flows and ownership.</li>
+                            <li>Record translations where meanings differ.</li>
+                            <li>Maintain the map as contracts evolve.</li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="19"
+                                                             aria-label="Mark lesson 19 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+            <details class="lesson" open id="lesson-20" data-lesson="20">
+                <summary><span class="num">LESSON 20</span><span
+                        class="lesson-title">What are Upstream and Downstream Contexts?</span><span
+                        class="caret" aria-hidden="true">▾</span></summary>
+                <div class="lesson-body">
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">A</span>Beginner explanation
+                    </h3>
+                        <p>Upstream and downstream describe a dependency. An
+                            upstream context provides information or a service.
+                            A downstream context depends on what it provides.
+                            This is not simply the order in which business steps
+                            happen.</p>
+                        <dl class="definition">
+                            <dt>Upstream</dt>
+                            <dd>The provider in a particular context
+                                relationship.
+                            </dd>
+                            <dt>Downstream</dt>
+                            <dd>The consumer that depends on that provider.</dd>
+                        </dl>
+                        <p><span class="small-label">Why it matters: </span>Knowing
+                            dependency direction helps teams coordinate contract
+                            changes and prevent surprise outages.</p>
+                        <p><span class="small-label">When to use it: </span>Identify
+                            upstream and downstream whenever one context
+                            consumes another context&#x27;s API or event.</p>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">B</span>Practical example
+                    </h3>
+                        <p>Inventory provides stock availability to Ordering.
+                            For that interaction, Inventory is upstream and
+                            Ordering is downstream.</p>
+                        <pre aria-label="Illustrative ASCII diagram or pseudocode">[Inventory / upstream]
+        |  StockAvailable
+        v
+[Ordering / downstream]</pre>
+                        <p>The direction describes information dependency;
+                            another interaction could reverse the
+                            relationship.</p></section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">C</span>Interview question
+                    </h3>
+                        <blockquote class="interview-q">How should the Inventory
+                            team change its availability API without breaking
+                            Ordering?
+                        </blockquote>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">D</span>Model interview
+                        answer</h3>
+                        <details class="model-answer" open>
+                            <summary>Reveal model answer / self-test</summary>
+                            <div class="answer-content"><p><strong>Suggested
+                                answer:</strong> I would identify Ordering as a
+                                downstream consumer, agree on required semantics
+                                and compatibility policy, use contract tests,
+                                and announce changes with a migration window.
+                                Inventory owns its internal model; Ordering
+                                should not depend on private schema details.</p>
+                                <p><strong>Trade-off / limitation:</strong>
+                                    Consumer input and shared planning reduce
+                                    breakage but can slow independent changes.
+                                    Good versioning, telemetry, and limited
+                                    public contracts balance the cost.</p>
+                                <p><strong>Mistake to avoid:</strong> Upstream
+                                    does not mean &#x27;runs first&#x27; in
+                                    every workflow; a context can be upstream in
+                                    one relationship and downstream in another.
+                                </p></div>
+                        </details>
+                    </section>
+                    <section class="lesson-section"><h3><span
+                            class="section-letter">E</span>Key takeaways</h3>
+                        <ul class="takeaways">
+                            <li>Upstream provides; downstream depends.</li>
+                            <li>Dependency is about contracts, not chronology.
+                            </li>
+                            <li>Change contracts with consumers in mind.</li>
+                            <li>Direction is specific to the relationship.</li>
+                        </ul>
+                    </section>
+                    <div class="complete-line"><label><input type="checkbox"
+                                                             data-complete="20"
+                                                             aria-label="Mark lesson 20 complete">
+                        Mark lesson complete</label><a href="#top">Back to top
+                        ↑</a></div>
+                </div>
+            </details>
+
+            <section class="review" id="principal-review"
+                     aria-labelledby="principal-title">
+                <div class="eyebrow">L5 · PRINCIPAL ENGINEER / SOLUTION
+                    ARCHITECT
+                </div>
+                <h2 id="principal-title">Principal Engineer Interview
+                    Review</h2>
+                <p>This section is <strong>advanced preparation added to the
+                    original lessons</strong>. The examples are hypothetical
+                    architecture exercises, not claims about a real production
+                    system. At L5, explain what you choose, what you reject, the
+                    risks you accept, and how you make adoption workable across
+                    teams.</p>
+                <div class="notice"><strong>60–90 second answer
+                    structure:</strong> Business outcome → boundaries and owners
+                    → integration and consistency → failure/security → rejected
+                    alternative → phased rollout and success measures.
+                </div>
+                <h3>1. Strategic vs. tactical DDD</h3>
+                <div class="review-grid">
+                    <div class="info-card"><h4>Strategic DDD: the big
+                        picture</h4>
+                        <p>Understand subdomains, find core differentiation,
+                            define bounded contexts, assign information
+                            ownership, and map upstream/downstream
+                            relationships. Use this first to decide <strong>where</strong>
+                            models should differ.</p></div>
+                    <div class="info-card"><h4>Tactical DDD: inside one
+                        boundary</h4>
+                        <p>Design domain models, entities, value objects,
+                            invariants, aggregates, aggregate roots, and domain
+                            events. Use it where complicated rules justify this
+                            structure. These choices explain
+                            <strong>how</strong> the model protects behavior.
+                        </p></div>
+                </div>
+                <h3>2. Architecture decision guide: choose based on
+                    constraints</h3>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Decision</th>
+                        <th>Choose it when</th>
+                        <th>What it costs / when to avoid</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Modular monolith with context-aligned modules</td>
+                        <td>Teams need clear ownership but one deployment is
+                            acceptable, operations are limited, or cross-module
+                            coordination is frequent.
+                        </td>
+                        <td>Shared runtime and release; requires automated rules
+                            to stop direct module-to-module data access.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Independently deployed services</td>
+                        <td>Contexts have distinct release cadences, scaling, or
+                            teams and can tolerate network and data delays.
+                        </td>
+                        <td>Failure modes, security, observability, operational
+                            cost, and harder cross-service consistency.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Synchronous API</td>
+                        <td>A consumer genuinely needs a result before
+                            proceeding, e.g. an immediate availability check.
+                        </td>
+                        <td>Latency and availability coupling. Set deadlines,
+                            define errors, and guard overload.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Asynchronous integration event</td>
+                        <td>Consumers react after a committed business fact
+                            without blocking the sender.
+                        </td>
+                        <td>Duplicates, lag, ordering, retries, schema
+                            evolution, reconciliation and user-facing pending
+                            states.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Anti-corruption layer (ACL)</td>
+                        <td>Old ERP and new domain use incompatible concepts,
+                            codes, or lifecycle meanings.
+                        </td>
+                        <td>More mapping code and latency. Avoid adding one if
+                            semantics already match or the layer becomes a
+                            business-policy hub.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Rich aggregate model</td>
+                        <td>Important invariants require atomic control and
+                            behavior has real complexity.
+                        </td>
+                        <td>More modeling effort; giant aggregates create lock
+                            contention and slow changes.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <h3>3. System boundary and data ownership checklist</h3>
+                <p>Ask these questions before deciding that two parts of the
+                    enterprise should be separate:</p>
+                <ol>
+                    <li><strong>Vocabulary:</strong> Does a term like Customer,
+                        Payment, Account, or Order mean something different?
+                    </li>
+                    <li><strong>Rules:</strong> Which context can accept,
+                        reject, settle, cancel, or reverse a business action?
+                    </li>
+                    <li><strong>Source of truth:</strong> Who owns each fact,
+                        and which other contexts merely keep a copy?
+                    </li>
+                    <li><strong>Consistency:</strong> Which data must change in
+                        one local transaction? Which status can safely arrive
+                        later?
+                    </li>
+                    <li><strong>Dependencies:</strong> Who is upstream? Which
+                        published contract is promised to downstream consumers?
+                    </li>
+                    <li><strong>People:</strong> Who approves schema changes,
+                        handles incidents, and maintains contract tests?
+                    </li>
+                    <li><strong>Migration:</strong> What does the legacy system
+                        still own, and how will ownership be transferred?
+                    </li>
+                </ol>
+                <h3>4. Scalability, reliability, security, and
+                    maintainability</h3>
+                <div class="review-grid">
+                    <div class="info-card"><h4>Scalability</h4>
+                        <p>Separate compute or deploy only where load and
+                            autonomy justify it. Keep aggregates small. Watch
+                            lock contention, hot keys, queue delay, and uneven
+                            consumer workloads. Model boundaries alone do not
+                            guarantee scale.</p></div>
+                    <div class="info-card"><h4>Reliability</h4>
+                        <p>Define timeouts, retry budgets, idempotent handlers,
+                            dead-letter handling, replay, and reconciliation. If
+                            Payments succeeds but delivery of its event is
+                            delayed, show a Pending state—not an invented
+                            success or failure.</p></div>
+                    <div class="info-card"><h4>Security</h4>
+                        <p>Authenticate workloads, authorize each cross-context
+                            action, minimize sensitive fields in events, encrypt
+                            stored and transmitted data, and audit critical
+                            decisions. Separate model ownership from access
+                            permission.</p></div>
+                    <div class="info-card"><h4>Maintainability</h4>
+                        <p>Test domain rules independently. Publish contract
+                            schemas, support compatible change, version
+                            deliberately, and enforce module imports/data access
+                            in CI. Track who owns legacy translations and when
+                            they can be removed.</p></div>
+                </div>
+                <h3>5. Common architecture anti-patterns</h3>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Anti-pattern</th>
+                        <th>Why it fails</th>
+                        <th>Better approach</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Database-table-per-microservice</td>
+                        <td>Technical decomposition ignores business invariants
+                            and drives chatty cross-service work.
+                        </td>
+                        <td>Discover capabilities and consistency boundaries
+                            before deployment units.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>One universal Customer / Order schema</td>
+                        <td>Different meanings become a central compromise that
+                            every team must coordinate.
+                        </td>
+                        <td>Use context-specific models with stable IDs and
+                            explicit translation.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Shared database writes between contexts</td>
+                        <td>Other teams can bypass the owning context's rules.
+                        </td>
+                        <td>Assign an owner and expose operations through
+                            controlled contracts.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Distributed monolith</td>
+                        <td>Many deployable services still need lockstep
+                            releases or synchronous chains.
+                        </td>
+                        <td>Improve contract autonomy; consolidate parts if
+                            necessary.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Giant aggregates</td>
+                        <td>Transactions become slow and contended.</td>
+                        <td>Scope aggregates to invariants and coordinate
+                            separate aggregates explicitly.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Events treated as guaranteed exactly-once side
+                            effects
+                        </td>
+                        <td>Retries, lost acknowledgments, and duplicate
+                            messages cause incorrect outcomes.
+                        </td>
+                        <td>Use durable publication, consumer idempotency,
+                            status tracking, and reconciliation.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ACL becomes a new enterprise brain</td>
+                        <td>Translation middleware accumulates independent
+                            business rules and ownership confusion.
+                        </td>
+                        <td>Keep the ACL focused on semantic adaptation.</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <h3>6. Cross-team technical leadership and implementation</h3>
+                <p>Principal-level work includes decisions and governance, not
+                    just architecture diagrams. I would:</p>
+                <ol>
+                    <li>Run workshops with domain experts and delivery teams to
+                        capture terms, rules, edge cases, and disagreements.
+                    </li>
+                    <li>Publish a context map and decision records (ADRs) with
+                        ownership, rejected options, and explicit assumptions.
+                    </li>
+                    <li>Define minimum contract standards: semantic versioning
+                        policy, consumer tests, error handling, observability,
+                        and security review.
+                    </li>
+                    <li>Use measurable rollout criteria: failed-contract
+                        changes, coordinated releases, business-error rate,
+                        event lag, incident recovery, and change lead time.
+                    </li>
+                    <li>Delegate domain decisions to accountable teams; time-box
+                        escalations and record approved exceptions.
+                    </li>
+                </ol>
+                <p class="muted">Enterprise challenge: teams may disagree about
+                    ownership, the legacy database may still be shared, and
+                    migration can temporarily increase complexity. Prefer
+                    incremental seams with measurable exit criteria instead of a
+                    risky all-at-once rewrite.</p>
+                <h3>7. Scenario-based Principal interview questions and model
+                    answers</h3>
+                <div class="scenario">
+                    <h4>Scenario 1 — Legacy ERP + SaaS CRM + new e-commerce
+                        platform</h4>
+                    <p><strong>Question:</strong> Define model boundaries and
+                        select an integration strategy without a big-bang
+                        rewrite.</p>
+                    <details class="principal-answer" open>
+                        <summary>Reveal model answer</summary>
+                        <div class="answer-content"><p>I would map CRM
+                            relationship management, ordering, invoicing, and
+                            payment responsibilities with domain experts. I
+                            would identify facts owned by the legacy ERP and
+                            avoid assuming all Customer fields belong to one
+                            universal model. A context map would show who
+                            supplies each fact and who depends on it. For
+                            incompatible legacy meanings, I would add a focused
+                            anti-corruption layer that translates identifiers
+                            and statuses.</p>
+                            <p><strong>Choice:</strong> Start with stable APIs
+                                or events and an incremental migration by
+                                capability. <strong>Trade-off:</strong>
+                                Coexistence creates temporary duplication and
+                                reconciliation requirements.
+                                <strong>Control:</strong> Contract tests, audit,
+                                dual-run validation where safe, cutover
+                                criteria, and a retirement plan for adapters.
+                            </p></div>
+                    </details>
+                </div>
+                <div class="scenario">
+                    <h4>Scenario 2 — Payment commits; downstream never receives
+                        the event</h4>
+                    <p><strong>Question:</strong> How would you protect
+                        consistency and recover without charging twice?</p>
+                    <details class="principal-answer" open>
+                        <summary>Reveal model answer</summary>
+                        <div class="answer-content"><p>Payments is authoritative
+                            for payment status. I would save the payment
+                            transition and an outbox message in the same
+                            database transaction, then have a relay publish the
+                            committed event. Consumers use event IDs to prevent
+                            duplicate effects and record progress. If an
+                            acknowledgment is lost, we retry delivery safely
+                            rather than reprocess the charge blindly.</p>
+                            <p><strong>Choice:</strong> Eventual consistency for
+                                downstream views, strong consistency at the
+                                payment/idempotency boundary.
+                                <strong>Trade-off:</strong> More outbox and
+                                consumer operations. <strong>Control:</strong>
+                                Queue-age alerts, reconciliation against
+                                authoritative payment records, and clear Pending
+                                status for customers.</p></div>
+                    </details>
+                </div>
+                <div class="scenario">
+                    <h4>Scenario 3 — All teams write the same Customer
+                        table</h4>
+                    <p><strong>Question:</strong> Would you split the table into
+                        microservices immediately?</p>
+                    <details class="principal-answer" open>
+                        <summary>Reveal model answer</summary>
+                        <div class="answer-content"><p>No. First I would
+                            establish meanings: CRM may own contacts and sales
+                            relationships, while Billing owns liable party and
+                            invoice information. I would inventory all writers
+                            and reads and identify transaction dependencies.
+                            Then I would make one context authoritative for each
+                            business fact, provide a contract, and remove direct
+                            writes incrementally.</p>
+                            <p><strong>Choice:</strong> Ownership and contract
+                                migration before physical decomposition.
+                                <strong>Trade-off:</strong> Temporary adapters
+                                and duplicate read models.
+                                <strong>Control:</strong> Change-data
+                                validation, consumer migration milestones,
+                                security reviews, and a ban on new cross-context
+                                writes. Splitting tables first is likely to move
+                                existing coupling onto the network.</p></div>
+                    </details>
+                </div>
+                <div class="scenario">
+                    <h4>Scenario 4 — Flash sale with scarce stock</h4>
+                    <p><strong>Question:</strong> Can Ordering and Inventory
+                        always be eventually consistent?</p>
+                    <details class="principal-answer" open>
+                        <summary>Reveal model answer</summary>
+                        <div class="answer-content"><p>Not for every decision. I
+                            would identify the invariant that prevents
+                            overselling and place the final reservation decision
+                            behind the Inventory owner's concurrency controls.
+                            Ordering may accept a request as Pending while
+                            reservation is checked, then confirm or reject. I
+                            would define customer-visible states and
+                            cancellation/refund behavior before designing
+                            messaging.</p>
+                            <p><strong>Choice:</strong> Keep the scarce-stock
+                                invariant local to a controlled reservation
+                                operation. <strong>Trade-off:</strong>
+                                Confirmation latency or reduced availability
+                                under load. <strong>Control:</strong> Idempotent
+                                reservation requests, oversell monitoring,
+                                expirations, and reconciliation. An event alone
+                                cannot guarantee stock remains available at
+                                acceptance time.</p></div>
+                    </details>
+                </div>
+                <div class="scenario">
+                    <h4>Scenario 5 — Two teams disagree on “Active Account”</h4>
+                    <p><strong>Question:</strong> How would you resolve the
+                        semantic conflict without forcing one shared model?</p>
+                    <details class="principal-answer" open>
+                        <summary>Reveal model answer</summary>
+                        <div class="answer-content"><p>I would ask the domain
+                            experts to list observable states and decisions. In
+                            CRM, Active might mean active sales relationship; in
+                            Billing, it might mean permitted to invoice. Both
+                            could be valid inside different contexts. I would
+                            make the meanings explicit, rename ambiguous
+                            contract fields, and translate at the boundary.</p>
+                            <p><strong>Choice:</strong> Separate ubiquitous
+                                languages, explicit translation. <strong>Trade-off:</strong>
+                                Additional mapping and documentation. <strong>Control:</strong>
+                                Contract examples and tests for edge cases,
+                                including suspension, closure, and
+                                reinstatement. The mistake is arguing for a
+                                single label without examining the business
+                                decisions.</p></div>
+                    </details>
+                </div>
+                <div class="scenario">
+                    <h4>Scenario 6 — The CTO wants microservices for every
+                        context</h4>
+                    <p><strong>Question:</strong> How would you challenge the
+                        approach constructively?</p>
+                    <details class="principal-answer" open>
+                        <summary>Reveal model answer</summary>
+                        <div class="answer-content"><p>I would agree on desired
+                            outcomes first: team autonomy, speed of change,
+                            isolation, and scaling. Then I would show two
+                            options: enforce bounded-context modules in one
+                            deployment or operate separate services. I would
+                            compare actual change frequency, required
+                            consistency, network failure risk, production
+                            support maturity, and ownership.</p>
+                            <p><strong>Choice:</strong> Prefer the smallest
+                                deployment architecture that meets measured
+                                needs. <strong>Trade-off:</strong> A monolith
+                                can limit independent release; services create
+                                operational cost. <strong>Control:</strong> Put
+                                architectural checks in CI, record the decision,
+                                and define future extraction triggers such as
+                                distinct scaling pressure and deployment
+                                independence.</p></div>
+                    </details>
+                </div>
+                <div class="scenario">
+                    <h4>Scenario 7 — A regulated bank modernizes payment
+                        initiation</h4>
+                    <p><strong>Question:</strong> How do bounded contexts shape
+                        the migration, security, and operational plan?</p>
+                    <details class="principal-answer" open>
+                        <summary>Reveal model answer</summary>
+                        <div class="answer-content"><p>I would separate payment
+                            intent and validation, execution/settlement,
+                            customer-visible status, and reconciliation
+                            according to real ownership. I would confirm exactly
+                            which system is authoritative for each payment
+                            state. Contracts must define whether Accepted means
+                            durable receipt or final settlement. I would use
+                            scoped identities, object-level authorization,
+                            minimal event payloads, audit records, and
+                            idempotency for payment requests.</p>
+                            <p><strong>Choice:</strong> Phased API modernization
+                                with anti-corruption adapters around legacy
+                                engines and resilient status updates. <strong>Trade-off:</strong>
+                                Asynchronous processing adds pending states and
+                                reconciliation. <strong>Control:</strong>
+                                Parallel validation where safe, consumer
+                                cutover, failure drills, measurable
+                                reconciliation exceptions, and rollback plans.
+                                Never equate a successful API response with
+                                final settlement unless the business contract
+                                explicitly says so.</p></div>
+                    </details>
+                </div>
+                <h3>8. Principal readiness rubric</h3>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Dimension</th>
+                        <th>What a strong answer demonstrates</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Business alignment</td>
+                        <td>Names a specific outcome, who owns it, and what is
+                            out of scope.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Domain boundaries</td>
+                        <td>Justifies semantics and ownership rather than
+                            technical-only splits.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Alternatives</td>
+                        <td>Rejects at least one simpler or more complex option
+                            for a concrete reason.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Failure thinking</td>
+                        <td>Handles timeouts, duplicates, stale states,
+                            recovery, and observability.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Enterprise leadership</td>
+                        <td>Explains contracts, ADRs, team collaboration,
+                            governance, and rollout metrics.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p><strong>Self-test:</strong> Pick one of the seven scenarios.
+                    Hide its answer, speak for 90 seconds, then compare your
+                    answer against this rubric. If you cannot name an owner, a
+                    failure mode, and an alternative, your answer is not yet L5.
+                </p>
+            </section>
+
+            <footer class="sources" id="sources">
+                <h2>Sources and verification</h2>
+                <p>Definitions were checked against official Microsoft
+                    architecture documentation. These links are optional
+                    references; the study guide itself works without internet
+                    access. The original learning sequence and L5 focus were
+                    taken from this conversation and its enterprise architecture
+                    roadmap.</p>
+                <ol>
+                    <li>
+                        <a href="https://learn.microsoft.com/en-us/azure/architecture/microservices/model/domain-analysis"
+                           target="_blank" rel="noopener noreferrer">Microsoft
+                            Learn — Use domain analysis to model
+                            microservices</a> — <span>Strategic vs. tactical DDD, subdomains, bounded contexts, ubiquitous language and context maps.</span>
+                    </li>
+                    <li>
+                        <a href="https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/microservice-domain-model"
+                           target="_blank" rel="noopener noreferrer">Microsoft
+                            Learn — Designing a microservice domain model</a> —
+                        <span>Entities, value objects, aggregates, roots and consistency boundaries.</span>
+                    </li>
+                    <li>
+                        <a href="https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/implement-value-objects"
+                           target="_blank" rel="noopener noreferrer">Microsoft
+                            Learn — Implementing value objects</a> — <span>Value equality and immutability.</span>
+                    </li>
+                    <li>
+                        <a href="https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation"
+                           target="_blank" rel="noopener noreferrer">Microsoft
+                            Learn — Domain events: design and implementation</a>
+                        — <span>Domain event and integration event distinction and dispatch considerations.</span>
+                    </li>
+                    <li>
+                        <a href="https://learn.microsoft.com/en-us/azure/architecture/patterns/anti-corruption-layer"
+                           target="_blank" rel="noopener noreferrer">Microsoft
+                            Learn — Anti-Corruption Layer pattern</a> — <span>Semantic translation and modernization trade-offs.</span>
+                    </li>
+                    <li>
+                        <a href="https://learn.microsoft.com/en-us/azure/architecture/databases/guide/transactional-outbox-cosmos"
+                           target="_blank" rel="noopener noreferrer">Microsoft
+                            Learn — Transactional Outbox pattern</a> — <span>Reliable publication of committed changes across systems.</span>
+                    </li>
+                </ol>
+                <p class="muted">The scenarios and model answers are
+                    instructional designs, not verified real-world case studies
+                    or promises of particular performance levels.</p>
+            </footer>
+        </main>
+    </div>
+</div>
+<script>
+    (function () {
+        'use strict';
+        const lessons = [...document.querySelectorAll('details.lesson')];
+        const answers = [...document.querySelectorAll('details.model-answer,details.principal-answer')];
+        const checkboxes = [...document.querySelectorAll('[data-complete]')];
+        const field = document.getElementById('search');
+        const result = document.getElementById('search-count');
+        const prog = document.getElementById('progress');
+        const progText = document.getElementById('progress-text');
+        const KEY = 'ddd-l1-l20-completed-v1';
+        let saved = {};
+        try {
+            saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {};
+        } catch (err) {
+            saved = {};
+        }
+
+        function updateProgress() {
+            const n = checkboxes.filter(x => x.checked).length;
+            prog.value = n;
+            progText.textContent = n + ' / ' + checkboxes.length + ' complete';
+            prog.setAttribute('aria-label', n + ' of ' + checkboxes.length + ' lessons complete');
+        }
+
+        checkboxes.forEach(box => {
+            box.checked = !!saved[box.dataset.complete];
+            box.addEventListener('change', () => {
+                saved[box.dataset.complete] = box.checked;
+                try {
+                    localStorage.setItem(KEY, JSON.stringify(saved));
+                } catch (err) {/* local file/browser privacy can disable storage */
+                }
+                updateProgress();
+            });
+        });
+        updateProgress();
+        lessons.forEach((item, i) => {
+            item.open = (i === 0);
+        });
+        answers.forEach(item => {
+            item.open = false;
+        });
+        const linkMap = new Map([...document.querySelectorAll('.sidebar-nav a[data-for]')].map(a => [a.dataset.for, a.parentElement]));
+
+        function applySearch() {
+            const q = field.value.trim().toLocaleLowerCase();
+            let n = 0;
+            lessons.forEach(item => {
+                const hay = item.textContent.toLocaleLowerCase();
+                const match = !q || hay.includes(q);
+                item.hidden = !match;
+                const li = linkMap.get(item.id);
+                if (li) li.hidden = !match;
+                if (match) n++;
+            });
+            result.textContent = q ? (n + ' of 20 lessons match') : 'All 20 lessons shown';
+            document.getElementById('no-results').hidden = (n !== 0);
+        }
+
+        field.addEventListener('input', applySearch);
+        applySearch();
+        document.getElementById('expand').addEventListener('click', () => lessons.filter(x => !x.hidden).forEach(x => {
+            x.open = true;
+        }));
+        document.getElementById('collapse').addEventListener('click', () => lessons.filter(x => !x.hidden).forEach(x => {
+            x.open = false;
+        }));
+        document.getElementById('show-answers').addEventListener('click', () => answers.forEach(x => {
+            x.open = true;
+        }));
+        document.getElementById('hide-answers').addEventListener('click', () => answers.forEach(x => {
+            x.open = false;
+        }));
+        document.getElementById('print').addEventListener('click', () => window.print());
+        document.querySelectorAll('.sidebar-nav a[href^="#lesson-"]').forEach(a => a.addEventListener('click', () => {
+            const item = document.getElementById(a.getAttribute('href').slice(1));
+            if (item) {
+                item.open = true;
+            }
+        }));
+        let printSnapshot = null;
+
+        function openForPrint() {
+            if (printSnapshot) return;
+            printSnapshot = {
+                open: [...lessons, ...answers].map(x => x.open),
+                hidden: lessons.map(x => x.hidden)
+            };
+            [...lessons, ...answers].forEach(x => {
+                x.open = true;
+            });
+            lessons.forEach(x => {
+                x.hidden = false;
+            });
+        }
+
+        function restoreAfterPrint() {
+            if (!printSnapshot) return;
+            [...lessons, ...answers].forEach((x, i) => {
+                x.open = printSnapshot.open[i];
+            });
+            lessons.forEach((x, i) => {
+                x.hidden = printSnapshot.hidden[i];
+            });
+            printSnapshot = null;
+        }
+
+        window.addEventListener('beforeprint', openForPrint);
+        window.addEventListener('afterprint', restoreAfterPrint);
+        if (window.matchMedia) {
+            const m = window.matchMedia('print');
+            const fn = (event) => {
+                if (event.matches) openForPrint(); else restoreAfterPrint();
+            };
+            if (m.addEventListener) m.addEventListener('change', fn);
+        }
+    })();
+</script>
+</body>
+</html>

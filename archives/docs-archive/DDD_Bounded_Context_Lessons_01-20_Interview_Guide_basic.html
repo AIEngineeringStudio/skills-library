@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>DDD &amp; Bounded Context — Lessons 1–20 | Interview Reference</title>
+<style>
+:root{color-scheme:light;--ink:#1d3029;--muted:#55665d;--accent:#136547;--accent2:#ecf5ef;--border:#d7e3d9;--paper:#fff;--bg:#f0f4f0;--blue:#315370}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.58 Arial,Helvetica,sans-serif}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+a:hover{text-decoration:underline}
+.topbar{position:sticky;top:0;background:#fff;z-index:10;border-bottom:1px solid var(--border);padding:12px 18px;box-shadow:0 2px 8px #10271a0d}
+.toprow{max-width:1040px;margin:auto;display:flex;align-items:center;gap:16px;justify-content:space-between}
+.brand{font-weight:700;font-size:13px;letter-spacing:.02em}.actions{display:flex;gap:8px}
+.btn{font:700 12px Arial,sans-serif;border:1px solid var(--accent);border-radius:6px;cursor:pointer;background:var(--accent);color:white;padding:10px 14px;text-decoration:none}
+.btn.alt{background:white;color:var(--accent)}
+.page{max-width:1040px;margin:28px auto 50px;background:var(--paper);padding:54px 64px;box-shadow:0 4px 30px #1b392016}
+.eyebrow{letter-spacing:.16em;color:var(--accent);font-size:11px;font-weight:800;text-transform:uppercase}
+h1{font-size:35px;line-height:1.16;margin:15px 0 15px;letter-spacing:-.025em}
+h2{font-size:24px;line-height:1.24;margin:0 0 10px}
+h3{font-size:20px;line-height:1.28;margin:4px 0 13px;color:#1a533d}
+h4{margin:24px 0 9px;font-size:16px}
+p{margin:9px 0 12px}
+.lead{font-size:17px;color:#41544a;max-width:680px}
+.cover{padding-bottom:35px;border-bottom:2px solid var(--border)}
+.meta{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0}
+.pill{border:1px solid #bdd5c5;background:#f7fbf8;border-radius:16px;font-size:12px;padding:4px 12px;color:#29503e;font-weight:bold}
+.hero-key{margin-top:24px;border-left:4px solid var(--accent);background:var(--accent2);padding:15px 20px}
+.hero-key p:last-child{margin-bottom:0}
+.note{color:var(--muted);font-size:12.5px}
+.toc{margin:24px 0 10px;break-after:page}
+.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 20px}
+.toc-grid a{border-bottom:1px dotted var(--border);font-size:13px;display:flex;gap:12px;align-items:baseline;text-decoration:none;padding:6px 2px;color:var(--ink)}
+.toc-grid a:hover{color:var(--accent)}
+.toc-grid a span{font:700 11px Arial;color:var(--accent)}
+.toc h2,.appendix h2{padding:0 0 12px;border-bottom:2px solid var(--border)}
+.part-heading{margin:38px 0 25px;padding:0 0 12px;border-bottom:2px solid var(--accent);break-before:page}
+.part-heading p{color:var(--muted)}
+.lesson{border:1px solid var(--border);border-radius:8px;margin:0 0 18px;padding:22px 24px;break-inside:avoid;background:#fff}
+.lesson-top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.num{display:inline-block;background:#e6f2e9;color:#135238;border:1px solid #b5d6be;font:bold 11px Arial;padding:5px 8px;border-radius:4px;letter-spacing:.07em}
+.topic{color:var(--muted);font-size:11.5px}
+.definition{font-size:14px}
+.remember{background:#f2f8f3;border-left:3px solid #5d986b;padding:8px 12px}
+.checkpoint{color:#385347;font-size:12.5px}.check-answer{display:block;margin-top:2px}
+.model-answer{border-top:1px solid var(--border);margin-top:14px;padding-top:14px}
+.model-label{color:var(--blue);font-weight:800;letter-spacing:.08em;font-size:10px}
+.question{color:#233a52;font-weight:700;font-size:14px;margin:6px 0}
+.answer{font-size:13.5px;margin:6px 0 12px}
+.l5{font-size:12.5px;color:#3c5148;margin:8px 0 0}
+.source-ref{font-size:10.5px;text-align:right;color:var(--muted);margin-top:9px}
+.appendix{margin-top:35px;break-before:page}
+.callout{background:#f1f7f3;border-left:4px solid var(--accent);padding:14px 17px;margin:14px 0}
+.diagram{white-space:pre;overflow-x:auto;background:#f7faf8;border:1px solid var(--border);border-radius:5px;padding:14px 16px;font:12.5px/1.4 'Courier New',Courier,monospace;color:#213c32;print-color-adjust:exact}
+table{width:100%;border-collapse:collapse;margin:12px 0 19px;font-size:12.7px}
+th{background:#e9f3eb;font-weight:bold;text-align:left}
+th,td{border:1px solid var(--border);padding:9px 10px;vertical-align:top}
+ul,ol{padding-left:23px}li{margin:6px 0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.small{font-size:12px;color:var(--muted)}
+.sources{font-size:12.5px}.sources li{padding:5px 0;overflow-wrap:anywhere}
+.warn{border-left:3px solid #b5833b;background:#fffaf1;padding:10px 14px;font-size:12.5px}
+footer{border-top:1px solid var(--border);margin-top:35px;padding-top:14px;font-size:11.5px;color:var(--muted)}
+@page{size:A4;margin:15mm 15mm 16mm}
+@media print{
+ html{scroll-behavior:auto}body{background:white;color:#111;font:10pt/1.43 Arial,Helvetica,sans-serif}
+ .topbar{display:none}.page{margin:0;padding:0;max-width:none;box-shadow:none}
+ h1{font-size:30pt}h2{font-size:18pt}h3{font-size:15pt}
+ .cover{padding-top:8mm;padding-bottom:12mm}
+ .toc{break-before:page}.toc-grid a{font-size:10pt}
+ .part-heading{margin:0 0 15px;padding-top:2mm}
+ .lesson{margin-bottom:10px;padding:12px 15px;border-radius:0;break-inside:avoid;page-break-inside:avoid}
+ .definition{font-size:9.5pt}.answer{font-size:9.35pt}.question{font-size:9.7pt}.checkpoint,.l5{font-size:8.8pt}
+ .remember{padding:6px 9px}.model-answer{margin-top:10px;padding-top:9px}
+ .source-ref{font-size:7.7pt}.topic{font-size:8pt}.num{font-size:8pt}
+ .hero-key,.remember,.num,th{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .appendix{break-before:page}.two-col{gap:12px}
+ pre,.diagram{white-space:pre-wrap;overflow-wrap:anywhere;break-inside:avoid}
+ a{color:#145b3f;text-decoration:none}
+ table{font-size:9pt}tr{break-inside:avoid}thead{display:table-header-group}
+ h2,h3,h4{break-after:avoid}footer{font-size:8pt}
+ .page-counter::after{content:' • Printed reference edition'}
+}
+@media(max-width:680px){.page{padding:25px 19px;margin:0}.toprow{flex-wrap:wrap}.two-col,.toc-grid{grid-template-columns:1fr}h1{font-size:29px}.lesson{padding:18px}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="toprow"><span class="brand">DDD / BOUNDED CONTEXT · LESSONS 01–20</span><div class="actions"><a class="btn alt" href="#contents">Contents</a><button class="btn" type="button" onclick="window.print()">Print / Save as PDF</button></div></div></div>
+<main class="page">
+<header class="cover" id="top"><div class="eyebrow">PRINCIPAL ENTERPRISE SOLUTION ARCHITECT / STUDY REFERENCE</div>
+<h1>Domain-Driven Design<br>&amp; Bounded Context</h1>
+<p class="lead">Lessons 1–20 · Simple explanations, confirmed checkpoint answers, and interview-ready model answers.</p>
+<div class="meta"><span class="pill">Light theme</span><span class="pill">A4 print-ready</span><span class="pill">20 lessons · 20 model answers</span><span class="pill">L5 interview target</span></div>
+<div class="hero-key"><strong>How to use this reference</strong><p>Read the plain-English definition first. Explain the example aloud. Then answer the interview question without looking at the model answer. Finally, read the Principal-level angle to add architecture judgment.</p></div>
+<p class="note">Coverage follows the 20 lessons taught in this conversation and the uploaded enterprise architecture roadmap. Illustrative shopping and banking scenarios are teaching examples, not claims about a real system. Model answers are sample talk tracks, not descriptions of your personal experience.</p>
+</header>
+<section class="toc" id="contents"><h2>Contents</h2>
+<p class="small"><strong>Part I:</strong> Lessons 1–10 — Business language and boundaries. <strong>Part II:</strong> Lessons 11–16 — Models and consistency. <strong>Part III:</strong> Lessons 17–20 — Events and relationships.</p>
+<div class="toc-grid"><a href="#lesson-1"><span>01</span>Domain-Driven Design (DDD)</a><a href="#lesson-2"><span>02</span>Bounded Context</a><a href="#lesson-3"><span>03</span>Why boundaries matter</a><a href="#lesson-4"><span>04</span>Same word, different meanings</a><a href="#lesson-5"><span>05</span>How contexts communicate</a><a href="#lesson-6"><span>06</span>Ubiquitous Language</a><a href="#lesson-7"><span>07</span>Domain versus Subdomain</a><a href="#lesson-8"><span>08</span>Core Subdomain</a><a href="#lesson-9"><span>09</span>Supporting Subdomain</a><a href="#lesson-10"><span>10</span>Generic Subdomain</a><a href="#lesson-11"><span>11</span>Domain Model</a><a href="#lesson-12"><span>12</span>Entity</a><a href="#lesson-13"><span>13</span>Value Object</a><a href="#lesson-14"><span>14</span>Invariant</a><a href="#lesson-15"><span>15</span>Aggregate</a><a href="#lesson-16"><span>16</span>Aggregate Root</a><a href="#lesson-17"><span>17</span>Domain Event</a><a href="#lesson-18"><span>18</span>Integration Event</a><a href="#lesson-19"><span>19</span>Context Map</a><a href="#lesson-20"><span>20</span>Upstream and Downstream</a></div>
+<h4>After the 20 lessons</h4>
+<p><a href="#reference-design">One-page reference architecture</a> · <a href="#l5-answer">90-second Principal interview answer</a> · <a href="#governance">L5 decision checklist</a> · <a href="#case-study">Verified production case</a> · <a href="#sources">Primary sources</a></p>
+</section>
+<section class="part-heading" id="part-1"><div class="eyebrow">STUDY REFERENCE</div><h2>Part I — Business language and boundaries</h2><p>Lessons 1–10 · First identify business responsibilities and vocabulary.</p></section>
+<section class="lesson" id="lesson-1">
+      <div class="lesson-top"><span class="num">LESSON 01</span><span class="topic">Foundations and business language</span></div>
+      <h3>Domain-Driven Design (DDD)</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> DDD means designing software using a deep understanding of the business, its language, and its rules.</p>
+      <p><strong>Example.</strong> For an online store, understand Ordering, Payments, and Shipping before choosing databases or microservices.</p>
+      <p class="remember"><strong>Remember:</strong> Begin with business workflows and difficult rules, not technology.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Who decides whether a shipment was delivered? <span class="check-answer"><strong>Answer:</strong> Shipping owns delivery tracking in our example.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">What is DDD, and what business problem does it solve?</p><p class="answer">Domain-Driven Design is an approach to building software around business knowledge. I start by speaking with domain experts, understanding how work is done, and recording the rules that make the business unique. In an online store, ordering, payment, and delivery have different responsibilities. Designing around those responsibilities makes the software easier to change. I would not use every DDD pattern for a simple CRUD application. I use deeper modeling where rules and change are complex.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Ask what business outcomes are difficult to change today. Use domain discovery before service decomposition.</p>
+      <div class="source-ref">Concept reference: <a href="#s1">[S1]</a></div>
+    </section>
+<section class="lesson" id="lesson-2">
+      <div class="lesson-top"><span class="num">LESSON 02</span><span class="topic">Foundations and business language</span></div>
+      <h3>Bounded Context</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> A bounded context marks where one particular business model and its vocabulary apply.</p>
+      <p><strong>Example.</strong> The Shipping context owns delivery tracking, while Payments owns processing refunds.</p>
+      <p class="remember"><strong>Remember:</strong> A context is a model boundary, not automatically a separate server or team.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Which area tracks a package? <span class="check-answer"><strong>Answer:</strong> Shipping.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">What is a bounded context? Does it always equal a microservice?</p><p class="answer">A bounded context is the boundary inside which a domain model has a clear, consistent meaning. For example, Shipping defines packages and delivery status; Payments defines charges and refunds. I would first agree on those meanings and ownership rules with the business. A bounded context does not have to be its own microservice. Two contexts may be modules in one deployment, and a large context may need more than one technical service. Deployment is a later decision.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Use business semantics and change patterns to define boundaries; test them against coupling and ownership.</p>
+      <div class="source-ref">Concept reference: <a href="#s1">[S1]</a></div>
+    </section>
+<section class="lesson" id="lesson-3">
+      <div class="lesson-top"><span class="num">LESSON 03</span><span class="topic">Foundations and business language</span></div>
+      <h3>Why boundaries matter</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> A boundary makes responsibility clear: who owns a rule, who may change it, and who must be informed.</p>
+      <p><strong>Example.</strong> Ordering can decide refund eligibility; Payments executes a refund. These are different rules.</p>
+      <p class="remember"><strong>Remember:</strong> Separate decisions by business responsibility, not by department names alone.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Who executes a financial refund? <span class="check-answer"><strong>Answer:</strong> Payments, while another area may decide eligibility.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">How do you decide whether two responsibilities belong in different contexts?</p><p class="answer">I look for different business rules, different terminology, different owners, and independent change needs. Refund eligibility may be an Ordering policy, while moving money is a Payments responsibility. Keeping them separate stops a change to one process from unexpectedly changing the other. Before splitting, I check whether they must share one immediate business transaction. If they do, a split could add more complexity than value.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Challenge a proposed boundary if it causes constant coordinated changes or breaks a required invariant.</p>
+      <div class="source-ref">Concept reference: <a href="#s1">[S1]</a></div>
+    </section>
+<section class="lesson" id="lesson-4">
+      <div class="lesson-top"><span class="num">LESSON 04</span><span class="topic">Foundations and business language</span></div>
+      <h3>Same word, different meanings</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> The same real-world thing may be represented differently in different bounded contexts.</p>
+      <p><strong>Example.</strong> Ordering views Order #1001 as items, price, and purchase status; Shipping sees package, carrier, and tracking state.</p>
+      <p class="remember"><strong>Remember:</strong> Do not force one universal Order or Customer object on every context.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Must Ordering store the full carrier tracking history? <span class="check-answer"><strong>Answer:</strong> No. It can consume a delivery summary from Shipping.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">Why is a single enterprise-wide Customer or Order model risky?</p><p class="answer">A shared universal model can mix rules that are different across contexts. A customer in Sales may be a prospect; in Billing, it may be the party responsible for an invoice. I preserve a model that is meaningful to each context and translate at boundaries. We can still share stable identifiers where useful, but I would not make every team adopt all fields and behaviors of one huge object. This reduces semantic coupling, at the cost of translation and synchronization.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Standardize external contracts where useful, but do not centralize every internal business concept.</p>
+      <div class="source-ref">Concept reference: <a href="#s1">[S1]</a></div>
+    </section>
+<section class="lesson" id="lesson-5">
+      <div class="lesson-top"><span class="num">LESSON 05</span><span class="topic">Foundations and business language</span></div>
+      <h3>How contexts communicate</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> Contexts exchange only information or requests needed to complete a business process.</p>
+      <p><strong>Example.</strong> Shipping tells Ordering that Order #1001 was delivered; Ordering does not need to know every carrier procedure.</p>
+      <p class="remember"><strong>Remember:</strong> Share outcomes through clear contracts, not internal implementation details.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Does Ordering need a code change when Shipping replaces FedEx with UPS? <span class="check-answer"><strong>Answer:</strong> Not if their agreed contract and required facts stay compatible.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">How would you integrate Ordering and Shipping without coupling their internal models?</p><p class="answer">I would define the exact business information Ordering needs: order reference and delivery state, for example. Shipping owns the detailed carrier model and publishes a stable contract or offers a suitable API. Ordering consumes only what it needs. I would document contract versions, failures, and who owns each field. A carrier change should normally remain inside Shipping. The trade-off is the need to maintain contracts and handle delayed or unavailable updates.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Review compatibility rules, data minimization, failure handling, and contract ownership.</p>
+      <div class="source-ref">Concept reference: <a href="#s1">[S1]</a></div>
+    </section>
+<section class="lesson" id="lesson-6">
+      <div class="lesson-top"><span class="num">LESSON 06</span><span class="topic">Foundations and business language</span></div>
+      <h3>Ubiquitous Language</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> Business experts and developers use agreed terms with the same meanings inside one bounded context.</p>
+      <p><strong>Example.</strong> In Shipping, “Shipped” means left the warehouse; “Delivered” means reached the customer.</p>
+      <p class="remember"><strong>Remember:</strong> Use the agreed terms in conversations, API contracts, tests, and code.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Can developers define “Delivered” differently from the Shipping business team? <span class="check-answer"><strong>Answer:</strong> No. Agree on one explicit meaning within Shipping.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">What is ubiquitous language, and how would you establish it?</p><p class="answer">Ubiquitous language is the vocabulary shared by business experts and engineers inside one bounded context. I would run short workshops using real transactions, exceptions, and status transitions. We would define terms such as Shipped and Delivered, then reflect those definitions in code, test cases, and APIs. Different contexts can use the same word differently, so I would make the scope of each definition explicit. This prevents costly misunderstandings.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Use examples and acceptance tests to expose vocabulary conflicts early.</p>
+      <div class="source-ref">Concept reference: <a href="#s1">[S1]</a></div>
+    </section>
+<section class="lesson" id="lesson-7">
+      <div class="lesson-top"><span class="num">LESSON 07</span><span class="topic">Foundations and business language</span></div>
+      <h3>Domain versus Subdomain</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> A domain is the business area under study. A subdomain is a smaller business problem within it.</p>
+      <p><strong>Example.</strong> Online Shopping is the broad domain; Inventory Management is one subdomain.</p>
+      <p class="remember"><strong>Remember:</strong> A subdomain describes business work; a bounded context describes a software-model boundary.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> What is Inventory Management within online shopping? <span class="check-answer"><strong>Answer:</strong> A subdomain.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">How is a subdomain different from a bounded context?</p><p class="answer">A subdomain is a part of the business problem, such as inventory or delivery planning. A bounded context is the boundary where a chosen software model and vocabulary are consistent. They often align, but they are not the same thing. I first identify subdomains with business experts, then decide how many models and boundaries we need. I would not assume that every subdomain maps to exactly one microservice or that every department is one context.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Produce a business capability map before a deployment diagram.</p>
+      <div class="source-ref">Concept reference: <a href="#s1">[S1]</a></div>
+    </section>
+<section class="lesson" id="lesson-8">
+      <div class="lesson-top"><span class="num">LESSON 08</span><span class="topic">Foundations and business language</span></div>
+      <h3>Core Subdomain</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> A core subdomain is a business capability that provides important competitive advantage.</p>
+      <p><strong>Example.</strong> A bank wins customers with its unique five-minute loan risk assessment.</p>
+      <p class="remember"><strong>Remember:</strong> Invest the most domain expertise where differentiation matters.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Which is core for that bank: payroll or risk assessment? <span class="check-answer"><strong>Answer:</strong> Loan Risk Assessment.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">How do you identify core subdomains and decide where to invest?</p><p class="answer">I ask business leaders what makes customers choose us and what capabilities they cannot easily buy from competitors. If a bank wins through a unique fast credit-decision process, risk assessment may be core. I allocate domain experts, engineering attention, and architecture reviews accordingly. Core does not mean everything must be built from scratch, and the classification may change as strategy changes. I validate it with business goals, not just technical complexity.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Align investment and architecture standards to business differentiation, not team prestige.</p>
+      <div class="source-ref">Concept reference: <a href="#s1">[S1]</a></div>
+    </section>
+<section class="lesson" id="lesson-9">
+      <div class="lesson-top"><span class="num">LESSON 09</span><span class="topic">Foundations and business language</span></div>
+      <h3>Supporting Subdomain</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> A supporting subdomain is necessary to run the business but is not its main competitive differentiator; it may still need specialized rules.</p>
+      <p><strong>Example.</strong> A bank’s loan document checks support the core loan decision process.</p>
+      <p class="remember"><strong>Remember:</strong> “Supporting” does not mean optional or low quality.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Could complaint management be supporting for a 10-minute delivery business? <span class="check-answer"><strong>Answer:</strong> Yes, if delivery speed is the differentiating capability.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">What makes a supporting subdomain different from a core subdomain?</p><p class="answer">A supporting subdomain enables the business but is not the primary source of competitive advantage. Loan document collection may be important, yet a bank may compete through a unique risk engine instead. I still design supporting processes for correctness, security, and operational needs. I would use simpler implementation choices when possible, but custom rules may justify custom software. The classification guides investment; it does not remove responsibility.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Right-size design effort without weakening controls or compliance.</p>
+      <div class="source-ref">Concept reference: <a href="#s1">[S1]</a></div>
+    </section>
+<section class="lesson" id="lesson-10">
+      <div class="lesson-top"><span class="num">LESSON 10</span><span class="topic">Foundations and business language</span></div>
+      <h3>Generic Subdomain</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> A generic subdomain solves a common business problem for which mature off-the-shelf products often exist.</p>
+      <p><strong>Example.</strong> Payroll or employee email is commonly handled using an existing product.</p>
+      <p class="remember"><strong>Remember:</strong> Look for buy/configure options before rebuilding common functionality.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Employee email for the bank: core, supporting, or generic? <span class="check-answer"><strong>Answer:</strong> Usually generic.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">When should an organization buy software instead of building its own?</p><p class="answer">I first decide whether the capability truly differentiates the business. For generic needs like staff email or standard payroll, buying or using a managed product is usually worth evaluating. I would compare integration effort, compliance, data ownership, total cost, vendor risk, and exit options. Custom work may still be necessary for unique constraints. The goal is not to outsource important controls; it is to keep engineering investment focused on what creates business value.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Require a build-versus-buy decision that includes security, integration and exit risks.</p>
+      <div class="source-ref">Concept reference: <a href="#s1">[S1]</a></div>
+    </section>
+<section class="part-heading" id="part-11"><div class="eyebrow">STUDY REFERENCE</div><h2>Part II — Domain modeling and correctness</h2><p>Lessons 11–16 · Then model identities, rules, and consistency.</p></section>
+<section class="lesson" id="lesson-11">
+      <div class="lesson-top"><span class="num">LESSON 11</span><span class="topic">Tactical modeling and consistency</span></div>
+      <h3>Domain Model</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> A domain model represents business concepts, their information, and their valid behavior.</p>
+      <p><strong>Example.</strong> Loan Application: amount, status, and the rule that approval requires a passed risk assessment.</p>
+      <p class="remember"><strong>Remember:</strong> Do not confuse a rich business model with a database table or DTO.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Should a loan model include its approval rules? <span class="check-answer"><strong>Answer:</strong> Yes, where those rules belong in the domain model.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">What is a domain model, and how is it different from a data model?</p><p class="answer">A domain model expresses the important business concepts and what they are allowed to do. A loan application has attributes, such as amount and status, but also behavior, such as approve or reject, with rules. A database schema primarily describes storage. I would put complex business logic near the model that owns it instead of scattering rules across controllers and scripts. For simple CRUD data, a smaller model may be enough.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Look for rules duplicated across APIs, batch jobs, and user interfaces.</p>
+      <div class="source-ref">Concept reference: <a href="#s2">[S2]</a></div>
+    </section>
+<section class="lesson" id="lesson-12">
+      <div class="lesson-top"><span class="num">LESSON 12</span><span class="topic">Tactical modeling and consistency</span></div>
+      <h3>Entity</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> An entity is an object whose identity continues even as its properties change.</p>
+      <p><strong>Example.</strong> Loan LA1001 stays the same application when its status changes from Pending to Approved.</p>
+      <p class="remember"><strong>Remember:</strong> Equal attributes do not make two different entities the same entity.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Are LA1001 and LA1002 the same entity if both are for $50,000? <span class="check-answer"><strong>Answer:</strong> No. They have different identities.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">What is an entity in DDD?</p><p class="answer">An entity is a domain object that has a continuing business identity. Two loan applications may have the same amount and status but different application IDs, so they are different entities. An entity can also change state while remaining the same application. I focus on meaningful business identity and lifecycle, not only primary-key design. When modeling across contexts, I also check whether the same real-world ID represents different domain concepts.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Define identity, lifecycle, owner, and permitted state transitions.</p>
+      <div class="source-ref">Concept reference: <a href="#s2">[S2]</a></div>
+    </section>
+<section class="lesson" id="lesson-13">
+      <div class="lesson-top"><span class="num">LESSON 13</span><span class="topic">Tactical modeling and consistency</span></div>
+      <h3>Value Object</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> A value object is defined by its values rather than by its own continuing identity.</p>
+      <p><strong>Example.</strong> Money(50,000, USD) equals another Money(50,000, USD) in the same model.</p>
+      <p class="remember"><strong>Remember:</strong> Compare all relevant values; Money includes currency, not just amount.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Are two Money values of 50,000 USD equal? <span class="check-answer"><strong>Answer:</strong> Yes, when amount and currency match.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">What is a value object, and why use one?</p><p class="answer">A value object represents a concept we care about for its value rather than for a unique identity. Money is a useful example: amount and currency belong together. I would make it immutable and provide operations that prevent invalid results. Two Money objects with the same amount and currency are equal in this model. Value objects reduce primitive-value mistakes such as treating 100 USD as the same as 100 EUR.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Prefer meaningful value types for money, dates, units, addresses, and risk scores where rules warrant them.</p>
+      <div class="source-ref">Concept reference: <a href="#s3">[S3]</a></div>
+    </section>
+<section class="lesson" id="lesson-14">
+      <div class="lesson-top"><span class="num">LESSON 14</span><span class="topic">Tactical modeling and consistency</span></div>
+      <h3>Invariant</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> An invariant is a business rule that must remain true for an object or consistency boundary to be valid.</p>
+      <p><strong>Example.</strong> A loan may enter Approved only after its risk assessment has passed.</p>
+      <p class="remember"><strong>Remember:</strong> Do not expose state changes that bypass required validation.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Can an API set any loan status without checking the rules? <span class="check-answer"><strong>Answer:</strong> No. It must enforce the applicable invariant.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">What is a business invariant? Where would you enforce it?</p><p class="answer">An invariant is a rule that cannot be broken by a valid business operation. If a loan can be approved only after a successful risk assessment, I enforce that rule in the domain behavior controlling approval, not only in a user-interface button. Every route into the system should use that behavior. I would test valid and invalid transitions, including concurrent requests. If the rule spans different systems, I would carefully decide which local facts must be immediately consistent and which need an explicit workflow.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Make strict consistency needs explicit before choosing service boundaries.</p>
+      <div class="source-ref">Concept reference: <a href="#s2">[S2]</a></div>
+    </section>
+<section class="lesson" id="lesson-15">
+      <div class="lesson-top"><span class="num">LESSON 15</span><span class="topic">Tactical modeling and consistency</span></div>
+      <h3>Aggregate</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> An aggregate is a consistency boundary around related entities and value objects that must obey rules together.</p>
+      <p><strong>Example.</strong> An Order and its Order Items can be one aggregate so removing an item updates the order total correctly.</p>
+      <p class="remember"><strong>Remember:</strong> Do not group everything related; group only what needs one consistency boundary.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> When an item is removed, should the order total be updated? <span class="check-answer"><strong>Answer:</strong> Yes, consistently within the Order Aggregate.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">How do you decide the size of an aggregate?</p><p class="answer">I start from business invariants and transactions. If order items and total must remain correct together, I may keep them inside one Order aggregate. I prefer small aggregates because oversized aggregates create lock contention and restrict independent changes. I would not place Payment and Shipping into the Order aggregate just because they are related; those processes may have separate ownership and transaction lifecycles. Cross-aggregate coordination can use application workflows and events.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Review contention, concurrency, transaction scope, and cross-aggregate failure cases.</p>
+      <div class="source-ref">Concept reference: <a href="#s2">[S2]</a></div>
+    </section>
+<section class="lesson" id="lesson-16">
+      <div class="lesson-top"><span class="num">LESSON 16</span><span class="topic">Tactical modeling and consistency</span></div>
+      <h3>Aggregate Root</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> The aggregate root is the entity through which external callers request updates to its aggregate.</p>
+      <p><strong>Example.</strong> Call Order.changeQuantity(...) instead of directly editing an internal Order Item.</p>
+      <p class="remember"><strong>Remember:</strong> The root protects the aggregate invariants.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Should quantity updates pass through Order? <span class="check-answer"><strong>Answer:</strong> Yes, through the Order Aggregate Root.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">What does the aggregate root protect?</p><p class="answer">The aggregate root is the controlled entry point for updating the aggregate. For an Order aggregate, the Order root can validate a quantity change, reject invalid operations, and keep totals correct. External code should not modify child entities in ways that bypass those checks. I would expose business operations rather than unrestricted setters, and keep one transaction consistent within the aggregate. This does not mean the root directly runs remote payment or shipping calls.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Keep infrastructure calls outside the aggregate; test root behavior as pure business logic where possible.</p>
+      <div class="source-ref">Concept reference: <a href="#s2">[S2]</a></div>
+    </section>
+<section class="part-heading" id="part-17"><div class="eyebrow">STUDY REFERENCE</div><h2>Part III — Communication between contexts</h2><p>Lessons 17–20 · Finally describe facts and relationships across boundaries.</p></section>
+<section class="lesson" id="lesson-17">
+      <div class="lesson-top"><span class="num">LESSON 17</span><span class="topic">Events, relationships and integration</span></div>
+      <h3>Domain Event</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> A domain event records a meaningful business fact that has already happened inside a domain model.</p>
+      <p><strong>Example.</strong> OrderPlaced or LoanApproved can trigger work elsewhere within the same bounded context.</p>
+      <p class="remember"><strong>Remember:</strong> Use past-tense facts; distinguish them from commands such as PlaceOrder.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Which is an event: PlaceOrder or OrderPlaced? <span class="check-answer"><strong>Answer:</strong> OrderPlaced.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">What is a domain event and why use it?</p><p class="answer">A domain event states that an important business fact has occurred, such as OrderPlaced. It makes follow-up behavior explicit, so the code that handles an order does not have to contain every side effect directly. I use domain events mainly to coordinate behavior within a bounded context. A domain event is not automatically an external broker message. If another context must know about the change, I translate the committed fact into a separate integration contract.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Define event meaning, transaction timing, handler failures, and versioning.</p>
+      <div class="source-ref">Concept reference: <a href="#s4">[S4]</a></div>
+    </section>
+<section class="lesson" id="lesson-18">
+      <div class="lesson-top"><span class="num">LESSON 18</span><span class="topic">Events, relationships and integration</span></div>
+      <h3>Integration Event</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> An integration event communicates a committed business change to other bounded contexts or systems.</p>
+      <p><strong>Example.</strong> Payments publishes PaymentCompleted after saving success; authorized consumers update their own status.</p>
+      <p class="remember"><strong>Remember:</strong> Publish only facts that are committed; expect delivery delays and duplicates.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> How can Payments notify Shipping of a completed payment? <span class="check-answer"><strong>Answer:</strong> Publish an integration event that Shipping is allowed to consume.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">How do integration events differ from domain events?</p><p class="answer">Both describe facts that happened, but they serve different boundaries. A domain event belongs to the internal domain model. An integration event is a versioned contract sent to other contexts after the relevant change is committed. For PaymentCompleted, I would ensure the payment status and event are recorded reliably, often using an outbox. Consumers must handle duplicate delivery and delayed information. I would also minimize sensitive payment data in the event payload.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Require producer ownership, schemas, idempotent consumers, monitoring, and delivery recovery.</p>
+      <div class="source-ref">Concept reference: <a href="#s4">[S4]</a></div>
+    </section>
+<section class="lesson" id="lesson-19">
+      <div class="lesson-top"><span class="num">LESSON 19</span><span class="topic">Events, relationships and integration</span></div>
+      <h3>Context Map</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> A context map documents bounded contexts and the meaningful relationships between them.</p>
+      <p><strong>Example.</strong> Ordering depends on Inventory availability and receives delivery updates from Shipping.</p>
+      <p class="remember"><strong>Remember:</strong> A useful context map includes ownership and relationship type, not arrows alone.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> What does a context map show? <span class="check-answer"><strong>Answer:</strong> Bounded contexts and their relationships.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">How would you build a context map for a large enterprise?</p><p class="answer">I would list the key bounded contexts with business owners, the data or capability each owns, and how it interacts with the others. Then I would record relationships such as upstream/downstream, contract ownership, and translations needed between models. In an enterprise with a CRM, ERP, and order platform, this map exposes hidden dependencies and integration risks. I would keep it tied to real business workflows and refresh it as responsibilities or contracts change.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Use the map to find circular dependencies, shared databases, and ambiguous ownership.</p>
+      <div class="source-ref">Concept reference: <a href="#s1">[S1]</a></div>
+    </section>
+<section class="lesson" id="lesson-20">
+      <div class="lesson-top"><span class="num">LESSON 20</span><span class="topic">Events, relationships and integration</span></div>
+      <h3>Upstream and Downstream</h3>
+      <p class="definition"><strong>Plain-English definition.</strong> An upstream context supplies a model, contract, or capability on which a downstream context depends.</p>
+      <p><strong>Example.</strong> Inventory provides availability data to Ordering; in that relationship, Inventory is upstream.</p>
+      <p class="remember"><strong>Remember:</strong> Upstream/downstream is a dependency relationship, not simply business process order.</p>
+      <p class="checkpoint"><strong>Earlier quick check:</strong> Inventory supplies availability to Ordering. Who is upstream? <span class="check-answer"><strong>Answer:</strong> Inventory.</span></p>
+      <div class="model-answer"><div class="model-label">INTERVIEW QUESTION &amp; MODEL ANSWER</div>
+        <p class="question">Explain upstream and downstream with one enterprise example.</p><p class="answer">Upstream is the context providing a capability or contract; downstream is the context depending on it. If Inventory exposes availability and Ordering uses it to accept orders, Inventory is upstream in that relationship. I would agree on API or event contracts, availability expectations, escalation, and change notice. In another relationship Ordering might be upstream to Shipping. These labels describe a specific dependency; they are not permanent rankings of teams.</p>
+      </div>
+      <p class="l5"><strong>Principal-level angle:</strong> Make consumer needs, versioning, ownership and service-level expectations explicit.</p>
+      <div class="source-ref">Concept reference: <a href="#s1">[S1]</a></div>
+    </section>
+<section class="appendix" id="reference-design"><div class="eyebrow">SYNTHESIS · ONE-PAGE REFERENCE</div><h2>How the 20 lessons fit together</h2>
+<p>Start with the business and then define software-model boundaries. Within each bounded context, model valid changes. Between contexts, define explicit contracts and relationships.</p>
+<pre class="diagram">ONLINE SHOPPING (DOMAIN)
+|
++-- Ordering (SUBDOMAIN / BOUNDED CONTEXT candidate)
+|     Language: Order, Buyer, Confirmed
+|     Aggregate: Order -> Order Items
+|     Invariant: order total must be correct
+|     Event: OrderPlaced (internal business fact)
+|
++-- Payments (SUBDOMAIN / BOUNDED CONTEXT candidate)
+|     Language: Payment, Capture, Refund
+|     Owns payment execution and its outcome
+|     Integration Event: PaymentCompleted
+|
++-- Shipping (SUBDOMAIN / BOUNDED CONTEXT candidate)
+      Language: Shipment, Carrier, Delivered
+      Owns tracking and delivery status
+
+CONTEXT MAP (example dependencies)
+Inventory --availability--> Ordering
+Payments  --payment result--> Ordering
+Shipping  --delivery status--> Ordering</pre>
+<div class="warn"><strong>Important:</strong> The arrows are illustrative information flows. A real design must decide which context initiates each workflow, how ownership is assigned, and whether the dependency is synchronous or asynchronous. Bounded context ≠ microservice. Aggregate ≠ database. Domain event ≠ integration event.</div>
+<h4>Core distinctions at a glance</h4>
+<table><thead><tr><th>Term</th><th>Main question answered</th><th>Example</th></tr></thead><tbody>
+<tr><td>Domain / Subdomain</td><td>What business problem are we solving?</td><td>Commerce / Shipping</td></tr>
+<tr><td>Bounded Context</td><td>Where is one model and language valid?</td><td>Shipping model</td></tr>
+<tr><td>Entity / Value Object</td><td>Which thing? Or which value?</td><td>Order #1001 / Money(1000, USD)</td></tr>
+<tr><td>Invariant / Aggregate</td><td>What must stay true and consistent together?</td><td>Order total / Order aggregate</td></tr>
+<tr><td>Domain Event / Integration Event</td><td>What happened locally? What must others learn?</td><td>OrderPlaced / PaymentCompleted</td></tr>
+<tr><td>Context Map</td><td>How do models and teams depend on each other?</td><td>Inventory upstream to Ordering</td></tr>
+</tbody></table>
+</section>
+<section class="appendix" id="l5-answer"><div class="eyebrow">SPEAKING PRACTICE</div><h2>Principal-level model answer (about 90 seconds)</h2>
+<p class="question">Interview question: “We have CRM, Ordering, Billing, and a legacy ERP. How would you apply DDD and bounded contexts?”</p>
+<div class="callout"><p>“I would start by understanding the business capabilities and the meaning of key terms in each system. For example, Customer can mean a prospect in CRM, a buyer in Ordering, and a payer in Billing. I would not force those into one universal object.</p>
+<p>I would work with business and engineering experts to identify subdomains, agree on ubiquitous language, and map ownership of business rules and data. Then I would define bounded contexts and their relationships, including upstream and downstream dependencies and any translation needed for the legacy ERP.</p>
+<p>Within each context, I would model entities, value objects, aggregates, and invariants where business complexity requires them. Across contexts, I would use stable APIs or integration events with explicit contracts and failure handling.</p>
+<p>Finally, I would choose deployment boundaries separately. I would consider a modular monolith if it gives clear ownership with less operational cost. For independent services, I would plan for eventual consistency, contract testing, observability, security, and migration. I would record trade-offs, assign owners, and measure whether the new boundaries reduce cross-team change and delivery risk.”</p></div>
+<p class="small"><strong>Do not memorize blindly:</strong> adapt this to actual organizational constraints. Ask for throughput, availability, data sensitivity, regulatory requirements, and migration deadlines rather than inventing them.</p>
+</section>
+<section class="appendix" id="governance"><div class="eyebrow">L5 ARCHITECTURE CARD</div><h2>Decisions you must defend in a Principal interview</h2>
+<div class="two-col"><div><h4>Before proposing boundaries</h4><ol>
+<li><strong>Business outcome:</strong> What should improve?</li><li><strong>Capability map:</strong> What subdomains exist?</li><li><strong>Language:</strong> Where do terms have different meanings?</li><li><strong>Ownership:</strong> Who owns decisions and data?</li><li><strong>Invariants:</strong> Which rules need immediate consistency?</li><li><strong>Context map:</strong> Who provides and who depends on contracts?</li>
+</ol></div><div><h4>Before approving implementation</h4><ol start="7">
+<li><strong>Alternative:</strong> Why not a modular monolith or simpler CRUD?</li><li><strong>Failures:</strong> What if messages repeat or a service is down?</li><li><strong>Security:</strong> Who can see and change data?</li><li><strong>Operations:</strong> How will we trace and reconcile workflows?</li><li><strong>Migration:</strong> How will legacy and new models coexist?</li><li><strong>Governance:</strong> What contracts, owners, tests, and exception process?</li>
+</ol></div></div>
+<h4>Common weak statements to avoid</h4>
+<table><thead><tr><th>Weak statement</th><th>Better statement</th></tr></thead><tbody>
+<tr><td>“One bounded context means one microservice.”</td><td>“A bounded context is a logical model boundary; deployment boundaries are a separate decision.”</td></tr>
+<tr><td>“Every business function needs DDD aggregates.”</td><td>“Use rich domain modeling where business rules are complex; simpler CRUD may suffice elsewhere.”</td></tr>
+<tr><td>“Events mean no coupling.”</td><td>“Events shift coupling into contracts, timing, ordering, failure handling, and data freshness.”</td></tr>
+<tr><td>“The context map is just boxes and arrows.”</td><td>“The map should expose relationships, ownership, upstream/downstream contracts, and integration risks.”</td></tr>
+<tr><td>“All data must be immediately synchronized.”</td><td>“Choose consistency based on invariants and business expectations; plan reconciliation for delayed updates.”</td></tr>
+</tbody></table>
+</section>
+<section class="appendix" id="case-study"><div class="eyebrow">VERIFIED PRIMARY-SOURCE EXAMPLE</div><h2>Production experience: QuintoAndar monolith decomposition</h2>
+<p><strong>Organization:</strong> QuintoAndar, a Brazilian real-estate technology company. <strong>Primary engineering report:</strong> José Lima Neto, June 15, 2021. <a href="https://medium.com/quintoandar-tech-blog/how-we-planned-for-monolith-decomposition-at-quintoandar-363f160b4427">Read the original experience report</a>.</p>
+<table><tbody>
+<tr><th style="width:24%">Problem</th><td>A growing monolith held many business capabilities. Unplanned extraction risked forming a distributed monolith with high coupling.</td></tr>
+<tr><th>DDD application</th><td>The engineering team identified subdomains and bounded contexts, reviewed existing code and business processes, mapped current (“as-is”) and target (“to-be”) designs, and created a decomposition roadmap.</td></tr>
+<tr><th>Production evidence</th><td>The report names previously extracted services including signatures, credit analysis, and owner-fee management.</td></tr>
+<tr><th>Reported result</th><td>The team gained a clearer view of business capabilities and dependencies and developed a prioritized extraction plan based on costs and expected benefits.</td></tr>
+<tr><th>Evidence limit</th><td>The article does not prove completion of every planned extraction or report a causal, measured performance or revenue improvement from the DDD exercise.</td></tr>
+</tbody></table>
+<p><strong>How to use this in an interview:</strong> “QuintoAndar is an example of using DDD to plan decomposition, rather than splitting code by technical layer. I would use the same discovery-first approach, but validate boundaries against our own coupling, change frequency, business outcomes, and operations.”</p>
+</section>
+<section class="appendix" id="sources"><div class="eyebrow">REFERENCES AND SCOPE</div><h2>Primary sources and reading links</h2>
+<p>The course sequence and exercises follow the 20 prior lessons. Technical definitions were cross-checked against Microsoft’s architecture documentation. The production case comes from the named company’s engineering blog. These links provide additional reading; the HTML does not need an internet connection to display or print.</p>
+<ol class="sources"><li id="s1"><strong>[S1]</strong> <a href="https://learn.microsoft.com/en-us/azure/architecture/microservices/model/domain-analysis" target="_blank" rel="noopener noreferrer">Microsoft Azure Architecture Center — Use domain analysis to model microservices</a><br><span class="muted">Strategic DDD, subdomains, bounded contexts, language, context maps, upstream/downstream</span></li>
+<li id="s2"><strong>[S2]</strong> <a href="https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/microservice-domain-model" target="_blank" rel="noopener noreferrer">Microsoft Learn — Designing a microservice domain model</a><br><span class="muted">Entities, value objects, aggregates, roots, and business rules</span></li>
+<li id="s3"><strong>[S3]</strong> <a href="https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/implement-value-objects" target="_blank" rel="noopener noreferrer">Microsoft Learn — Implement value objects</a><br><span class="muted">Equality and immutability of value objects</span></li>
+<li id="s4"><strong>[S4]</strong> <a href="https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation" target="_blank" rel="noopener noreferrer">Microsoft Learn — Domain events: Design and implementation</a><br><span class="muted">Internal domain events versus integration events</span></li>
+<li id="s5"><strong>[S5]</strong> <a href="https://learn.microsoft.com/en-us/azure/architecture/microservices/" target="_blank" rel="noopener noreferrer">Microsoft Azure Architecture Center — Microservices architecture style</a><br><span class="muted">Microservices benefits, challenges, loose coupling and ownership</span></li>
+<li id="s6"><strong>[S6]</strong> <a href="https://medium.com/quintoandar-tech-blog/how-we-planned-for-monolith-decomposition-at-quintoandar-363f160b4427" target="_blank" rel="noopener noreferrer">QuintoAndar Engineering — How we planned for monolith decomposition</a><br><span class="muted">Primary engineering experience report, published June 15, 2021</span></li></ol>
+<p class="small"><strong>Source boundaries:</strong> The interview model answers, example contracts, diagrams, and L5 recommendations in this document are synthesized teaching material. They are not direct quotations from Microsoft, the uploaded roadmap, or QuintoAndar. Domain examples are intentionally simplified.</p>
+</section>
+<footer><strong>DDD / Bounded Context — Lessons 1–20</strong> · Interview reference edition · 16 October 2026<br>
+Designed as self-contained HTML for screen reading and A4 printing. Use your browser’s Print / Save as PDF command. <a href="#top">Back to top</a>.</footer>
+</main>
+</body>
+</html>
