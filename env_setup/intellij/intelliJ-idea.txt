@@ -1,0 +1,51 @@
+# Soft-Wrap
+#    press CMD+SHIFT+A
+#    type soft-wrap (View | Active Editor: Soft-Wrap
+#==============================================================================
+
+# Multiple cursors and selection ranges
+# Ctrl Alt Shift Click and drag the mouse over the desired parts of code
+#==============================================================================
+
+# To customize vmoptions (Idea.vmoptions)
+
+# Option 1
+#    Help | Edit Custom VM Options
+
+# Option 2
+#    press CMD+SHIFT+A
+#    type "vmoptions"
+#    Edit Custom VM Options
+#==============================================================================
+# vmoptions
+
+-Xms1024m
+-Xmx2048m
+-XX:ReservedCodeCacheSize=240m
+-XX:+UseCompressedOops
+-Dfile.encoding=UTF-8
+-XX:+UseConcMarkSweepGC
+-XX:SoftRefLRUPolicyMSPerMB=50
+-ea
+-Dsun.io.useCannonCaches=false
+-Djava.net.preferIPv4Stack=true
+-Djdk.http.auth.tunnelilng.disabledSchemes=""
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:-OmitStackTraceInFastThrow
+-Xverify:none
+-XX:ErrorFile=$USER_HOME/Desktop/java_error_in_idea_%p.log
+-XX:HeapDumpPath=$User_HOME/Desktop/java_error_idea.hprof
+
+###################### ADD MENU BAR TO INTELLIJ ##########################################
+# Intellij - Enable Screen Menu bar
+
+Option 1
+    Help | Edit Custom Properties
+    -Dapple.laf.useScreenMenuBar=false
+
+Option 2
+    press the combination CMD+SHIFT+A
+    type "vmoptions"
+    Edit Custom VM Options
+    add "-Dapple.laf.useScreenMenuBar=false" to the end of .vmoptions file
+    press the combination CMD+SHIFT+A, type "restart", Restart, Just Restart

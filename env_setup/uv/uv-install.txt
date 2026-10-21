@@ -1,0 +1,17 @@
+#   Setting up UV
+    https://github.com/astral-sh/uv
+
+    $ curl -LsSf https://astral.sh/uv/install.sh | sh
+    $ curl -LsSf https://astral.sh/uv/install.sh | zsh
+
+    How to Update:
+    $ uv self update
+
+    $ uv run python --version
+
+    $ uv sync (from project folder)
+
+    $ uv python list
+
+    $ uv tool list
+#   Instead of `pip install xxx` you do `uv add xxx`

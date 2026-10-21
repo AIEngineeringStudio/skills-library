@@ -1,0 +1,1 @@
+docker pull ibmcom/db2

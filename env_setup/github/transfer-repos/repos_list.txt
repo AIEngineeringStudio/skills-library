@@ -1,0 +1,5 @@
+py-project-template
+py-agentic
+agents-edonner
+mcp-playground
+travel-planner-mcp

@@ -1,0 +1,14 @@
+
+docker run -d -it --name database-enterprise -P store/oracle/database-enterprise:12.2.0.1
+
+672a5586d4fd247e8f02da1438cb1272b8aac5a3a5cb85365eda7f25fe98edc8
+
+
+docker port database-enterprise
+1521/tcp -> 0.0.0.0:<mapped host port>
+1521/tcp -> 0.0.0.0:32769
+
+ORCLCDB=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.0.0.132)(PORT=32769))
+    (CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=ORCLCDB.localdomain)))
+ORCLPDB1=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=<ip-address> of host)(PORT=32769))
+    (CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=ORCLPDB1.localdomain)))

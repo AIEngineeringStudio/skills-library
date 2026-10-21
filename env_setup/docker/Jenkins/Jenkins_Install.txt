@@ -1,0 +1,4 @@
+docker run -d -v jenkins_home:/Users/Shared/data/jenkins_home \
+  -p 8050:8050 \
+  -p 50000:50000 \
+  jenkins/jenkins:lts

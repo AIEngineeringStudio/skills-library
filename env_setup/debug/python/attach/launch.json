@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to Docker (debugpy)",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": {
+        "host": "localhost",
+        "port": 5678
+      },
+      /***Summary of all three path relationships**
+       ┌──────────────────────┬────────────────────────────────┐
+       │ Location             │ Path                           │
+       ├──────────────────────┼────────────────────────────────┤
+       │ Your machine         │ backend/app/                   │
+       │ Inside container     │ /app/app/                      │
+       │ localRoot            │ ${workspaceFolder}/backend/app │
+       │ remoteRoot           │ /app/app                       │
+       │ volume mount         │ ./backend/app:/app/app         │
+       └──────────────────────┴────────────────────────────────┘
+       */
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}/backend/app",
+          "remoteRoot": "/app/app"
+        }
+      ],
+      "justMyCode": true   // Skip debugpy stepping into library code
+    }
+  ]
+}
