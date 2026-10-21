@@ -1,0 +1,170 @@
+{
+  "default": true,
+
+  /* ===== STRUCTURE ===== */
+
+  "MD001": true,
+  /* Heading levels must increment by one */
+
+  "MD002": false,
+  /* Disabled: H1 may not always be first line in READMEs with badges */
+
+  "MD003": {
+    "style": "atx"
+  },
+  /* Enforce # style headings */
+
+  "MD004": {
+    "style": "dash"
+  },
+  /* Enforce - for unordered lists */
+
+  "MD005": true,
+  /* No inconsistent indentation for lists */
+
+  "MD006": true,
+  /* Start lists at left margin */
+
+  "MD007": {
+    "indent": 2
+  },
+  /* Nested list indentation = 2 spaces */
+
+  "MD008": true,
+  /* No trailing spaces in blockquotes */
+
+  "MD009": {
+    "br_spaces": 2,
+    "list_item_empty_lines": false,
+    "strict": true
+  },
+  /* No trailing spaces; allow explicit line breaks */
+
+  "MD010": {
+    "code_blocks": true
+  },
+  /* No hard tabs */
+
+  "MD011": true,
+  /* No reversed links */
+
+  "MD012": {
+    "maximum": 1
+  },
+  /* Max 1 blank line */
+
+  "MD018": true,
+  "MD019": true,
+  /* No space inside heading markers */
+
+  "MD020": true,
+  "MD021": true,
+  /* Single space after heading marker */
+
+  "MD022": true,
+  /* Blank line around headings */
+
+  "MD023": true,
+  /* Headings must start at beginning of line */
+
+  "MD024": {
+    "siblings_only": true
+  },
+  /* No duplicate headings at same level */
+
+  "MD025": {
+    "level": 1,
+    "front_matter_title": ""
+  },
+  /* Only one H1 */
+
+  "MD026": {
+    "punctuation": ".,;:!"
+  },
+  /* No trailing punctuation in headings */
+
+  "MD027": true,
+  /* No extra space in blockquotes */
+
+  "MD028": true,
+  /* No blank line inside blockquotes */
+
+  "MD029": {
+    "style": "ordered"
+  },
+  /* Ordered lists must be sequential */
+
+  "MD030": {
+    "ul_single": 1,
+    "ol_single": 1,
+    "ul_multi": 1,
+    "ol_multi": 1
+  },
+  /* Consistent spacing in lists */
+
+  "MD031": true,
+  /* Blank lines around fenced code blocks */
+
+  "MD032": true,
+  /* Blank lines around lists */
+
+  "MD033": {
+    "allowed_elements": [
+      "details",
+      "summary",
+      "kbd",
+      "br",
+      "hr"
+    ]
+  },
+  /* Allow controlled HTML usage */
+
+  "MD034": true,
+  /* No bare URLs */
+
+  "MD035": {
+    "style": "---"
+  },
+  /* Horizontal rule style */
+
+  "MD036": true,
+  /* No emphasis used as headings */
+
+  "MD037": true,
+  /* No spaces inside emphasis */
+
+  "MD038": true,
+  /* No spaces inside code spans */
+
+  "MD039": true,
+  /* No spaces inside links */
+
+  "MD040": true,
+  /* Fenced code blocks MUST specify language */
+
+  "MD041": false,
+  /* Disabled: README badges often precede H1 */
+
+  "MD042": true,
+  /* No empty links */
+
+  "MD043": false,
+  /* Disabled: TOC is optional */
+
+  "MD044": {
+    "names": [],
+    "code_blocks": false
+  },
+  /* Disabled: project-specific terminology varies */
+
+  "MD045": true,
+  /* Images must have alt text */
+
+  "MD046": {
+    "style": "fenced"
+  },
+  /* Enforce fenced code blocks */
+
+  "MD047": true
+  /* File must end with newline */
+}
