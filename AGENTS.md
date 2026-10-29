@@ -42,6 +42,23 @@ light-themed, PDF-friendly HTML file and a complete-source verification before
 delivery. Apply it together with any relevant learning or technology-stack
 skills above.
 
+When creating or reorganizing technical documentation, tutorials, reference
+guides, or engineering explanations in Markdown, load **`technical-docs-styling`**
+(`.agents/technical-docs-styling/SKILL.md`) for content structure,
+learning design, accessibility, and scannability. Apply it together with
+**`markdown-authoring`** (`.agents/markdown-authoring/SKILL.md`) for
+general Markdown conventions and print-friendly source formatting.
+
+Load **`markdown-authoring`** whenever creating or revising Markdown documents
+in this workspace, including when a specialized skill is also required.
+
+When asked to create, regenerate, export, render, or convert a Markdown document
+to PDF, load **`markdown-to-pdf`**
+(`.agents/markdown-to-pdf/SKILL.md`) and follow the shared PDF theme and
+validation workflow. Also load **`markdown-authoring`** for the source Markdown
+and **`technical-docs-styling`** when the document is technical documentation,
+a tutorial, reference guide, or learning material.
+
 ### Learning mode and implementation stage
 
 - Use the modes defined in `first-principles-learning`: interactive lessons
