@@ -53,8 +53,8 @@ Load **`markdown-authoring`** whenever creating or revising Markdown documents
 in this workspace, including when a specialized skill is also required.
 
 When asked to create, regenerate, export, render, or convert a Markdown document
-to PDF, load **`markdown-to-pdf`**
-(`.agents/markdown-to-pdf/SKILL.md`) and follow the shared PDF theme and
+to PDF, load **`pdf-skill`**
+(`.agents/pdf-skill/SKILL.md`) and follow the shared PDF theme and
 validation workflow. Also load **`markdown-authoring`** for the source Markdown
 and **`technical-docs-styling`** when the document is technical documentation,
 a tutorial, reference guide, or learning material.

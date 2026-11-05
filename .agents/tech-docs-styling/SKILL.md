@@ -81,7 +81,7 @@ Do not communicate meaning through color alone. Use labels, symbols, or patterns
 
 ## Verify the exported document
 
-When a PDF is requested, follow the repository's [Markdown-to-PDF workflow](...), which defines the shared theme and required validation. Check the actual rendered PDF rather than assuming the Markdown source or a screen preview guarantees print quality. If both A4 and Letter are required, render and validate each page size; passing at one size does not establish that the other fits.
+When a PDF is requested, follow the repository's [pdf-skill workflow](...), which defines the shared theme and required validation. Check the actual rendered PDF rather than assuming the Markdown source or a screen preview guarantees print quality. If both A4 and Letter are required, render and validate each page size; passing at one size does not establish that the other fits.
 
 Check that internal links, contents/index page references, page numbers, footnotes, exercise-to-answer references, and other navigation still point to the right destinations after pagination. Review code, diagrams, tables, images, and page breaks at final print size. Do not claim a format is verified if the corresponding render or check was not performed.
 

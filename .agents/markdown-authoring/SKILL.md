@@ -69,6 +69,6 @@ Before finishing, scan the document for wide tables, dense or nested lists, inco
 paragraphs that are difficult to read at A4 width. Replace presentation-only tables or excessive bullets with
 standalone bold labels followed by blockquoted explanations where that improves comprehension.
 
-For PDF conversion, also follow [the Markdown-to-PDF skill](...) and the shared
-[`pdf-theme/README.md`](...). This skill controls source Markdown readability; the PDF skill
-controls rendering and final-output validation.
+For PDF conversion, also follow [the pdf-skill](...) and the shared
+[`pdf-skill/README.md`](...). This skill controls source Markdown readability; 
+the PDF skill controls rendering and final-output validation.
