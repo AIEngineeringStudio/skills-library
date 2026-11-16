@@ -34,6 +34,11 @@ skills in `.agents/`:
   Use its concept order for MCP learning; retain `ai-study-tutor` for numbered
   AI architecture cases. MCP guide numbers are not AI curriculum case numbers.
   Teach without forced quizzes or comprehension gates unless requested.
+- Additionally, load **`gen-ui-tutor`** (`.agents/gen-ui-tutor/SKILL.md`) for
+  generative UI and the boundaries among A2UI, AG-UI, MCP Apps, and A2A.
+  Its comparison and learning tracks live in
+  `.agents/gen-ui-tutor/MCP-LEARNING-TRACKS.md`. Use `mcp-progressive-tutor`
+  for core MCP concepts and `ai-study-tutor` for numbered AI design cases.
 - Additionally, load **`design-pattern-tutor`** for learning, comparing, or
   practicing software design patterns, pattern selection, and learning-focused
   design reviews. It covers object-oriented, architectural, data, messaging,

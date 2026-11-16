@@ -1,9 +1,49 @@
 ---
-name: learning-with-small-examples
-description: 'Use when asked to learn, understand, study, or practice a subject; teach from first principles to enterprise-grade use with an upfront roadmap, short explanations, and minimal runnable exercises.'
+name: gen-ui-tutor
+description: 'Teach generative UI and agent interaction boundaries, especially A2UI, AG-UI, MCP Apps, and A2A, from first principles through small examples and production decisions.'
 ---
 
-# First-principles, hands-on learning
+# Generative UI and agent interaction tutor
+
+Use this skill when the learner asks how an agent chooses a UI, communicates
+with a frontend, embeds an app in a chat host, or delegates to another agent.
+Use [the learning tracks](MCP-LEARNING-TRACKS.md) for the four distinct
+concerns, prerequisites, worked scenario, and official specifications. Load
+`first-principles-learning` for the learner profile. For a numbered AI
+architecture case, use `ai-study-tutor` as the case owner and this skill only
+for the protocol or UI boundary the case needs. For core MCP lessons, follow
+`mcp-progressive-tutor` and its maintained course.
+
+## Four boundaries to teach explicitly
+
+| Technology | Main concern | Contract between |
+|------------|--------------|------------------|
+| A2UI | Declarative UI specification and renderer contract | Agent and trusted renderer |
+| AG-UI | Agent communication with frontend and user | Agent runtime and user-facing app |
+| MCP Apps | Embedded application UI in a compatible AI host | MCP server, host, and app view |
+| A2A | Communication between independent agents | Agent service and agent service |
+
+These can coexist. They do not substitute for one another, and none is a
+prerequisite for every GenUI design. Before choosing one, identify who owns the
+screen, who renders it, who starts the interaction, and whether a second
+independently operated agent is involved. Then teach only the needed boundary.
+
+Use one ticket-approval scenario when comparing the four. An agent may send an
+A2UI form specification to an allowed renderer; AG-UI may carry run events and
+state updates to a first-party frontend; an MCP server may supply an embedded
+MCP App view to a compatible chat host; and a separate specialist agent may
+receive a task via A2A. Each is an optional architecture choice, not one
+mandatory pipeline. Keep authorization and approval enforcement in trusted
+backend code, regardless of the UI or communication protocol.
+
+For a new learning path, show the four concerns once, then start with the
+smallest one relevant to the learner's problem. For a comparison, use the same
+scenario and trace each boundary separately. For a build, start with mock data
+and a minimal visible exchange; add packages only after verifying exact current
+APIs and host or renderer support. Do not assume a compatible MCP Apps host,
+A2UI renderer catalog, AG-UI client, or remote A2A peer exists in the user's
+environment. Do not require quizzes or practice answers for AI architecture
+lessons unless requested.
 
 ## Workspace boundary
 
@@ -61,12 +101,18 @@ Use this stack unless the learner asks for another:
   as ChatGPT, Claude, or MCP-compatible agents) can discover and call.
 - **MCP App:** Use when an MCP interaction also needs a richer visual interface
   for the AI client.
+- **A2UI:** Use when an agent should describe a UI using declared components
+  and the application has a compatible, trusted renderer and component catalog.
+- **AG-UI:** Use when an agent runtime needs to exchange run events, messages,
+  tool events, and state updates with a user-facing application.
+- **A2A:** Use when independently operated agents need to discover capabilities
+  and exchange tasks, messages, and artifacts across an agent boundary.
 - **App Bridge:** In an MCP host, use the host-side bridge from
   `@modelcontextprotocol/ext-apps/app-bridge` to connect an embedded MCP App UI
   to its MCP server. The host remains responsible for iframe sandboxing,
   permissions, and security policy; the bridge handles tool calls and results
   between the UI and the MCP server.
-- Do not treat these as interchangeable or introduce all three by default. Start
+- Do not treat these as interchangeable or introduce them all by default. Start
   with the user's actual client and interaction needs; explain the underlying
   HTTP, API, and MCP concepts before their frameworks.
 - When the requirements call for a visual MCP interaction backed by a web API,
